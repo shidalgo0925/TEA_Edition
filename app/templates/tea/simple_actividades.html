@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Actividades - TEA Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .saludo {
+            font-size: 2rem;
+            color: #E74C3C;
+            margin-bottom: 10px;
+        }
+        
+        .categorias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .categoria-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .categoria-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .categoria-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .categoria-titulo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 15px;
+        }
+        
+        .categoria-desc {
+            color: #7F8C8D;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .categoria-btn {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .categoria-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .categorias-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="avatar">👩‍🏫</div>
+            <h1 class="saludo">¡Hola Ana!</h1>
+            <p style="font-size: 1.2rem; color: #7F8C8D;">
+                ¿Qué quieres aprender hoy? 🌟
+            </p>
+        </div>
+        
+        <!-- Categorías -->
+        <div class="categorias-grid">
+            <div class="categoria-card" onclick="jugarActividad(1)">
+                <div class="categoria-icon">🗣️</div>
+                <div class="categoria-titulo">Lenguaje</div>
+                <div class="categoria-desc">Practica palabras y sonidos</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </div>
+            
+            <div class="categoria-card" onclick="jugarActividad(2)">
+                <div class="categoria-icon">🔢</div>
+                <div class="categoria-titulo">Números</div>
+                <div class="categoria-desc">Aprende a contar</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </div>
+            
+            <div class="categoria-card" onclick="jugarActividad(3)">
+                <div class="categoria-icon">🎨</div>
+                <div class="categoria-titulo">Colores</div>
+                <div class="categoria-desc">Reconoce los colores</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </div>
+            
+            <div class="categoria-card" onclick="jugarActividad(4)">
+                <div class="categoria-icon">🐶</div>
+                <div class="categoria-titulo">Animales</div>
+                <div class="categoria-desc">Conoce los animales</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </div>
+        </div>
+        
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            <a href="/tea/simple/nino" class="nav-btn">
+                🏠 Dashboard
+            </a>
+            <a href="/tea/simple/padres" class="nav-btn">
+                👨‍👩‍👧 Ver Progreso
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        function jugarActividad(actividadId) {
+            window.location.href = `/tea/simple/actividad/${actividadId}`;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

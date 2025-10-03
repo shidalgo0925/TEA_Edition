@@ -1,0 +1,377 @@
+/* -*- coding: utf-8 -*-
+ * Estilos para Actividades Interactivas TEA Edition
+ */
+
+/* Contenedor de actividades */
+.activity-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.activity-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #FFCE32;
+}
+
+.activity-header h3 {
+    color: #1D63FF;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.score-display {
+    background: linear-gradient(135deg, #FFCE32, #FFA500);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(255, 206, 50, 0.3);
+}
+
+/* Contenido de actividades */
+.activity-content {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.instruction {
+    margin: 20px 0;
+    font-size: 1.3rem;
+    color: #2C3E50;
+    font-weight: bold;
+}
+
+/* Opciones de colores */
+.color-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.color-option {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.color-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.color-option:active {
+    transform: translateY(0);
+}
+
+/* Opciones de números */
+.number-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.number-option {
+    padding: 20px;
+    border: 3px solid #1D63FF;
+    background: white;
+    color: #1D63FF;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(29, 99, 255, 0.2);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.number-option:hover {
+    background: #1D63FF;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(29, 99, 255, 0.4);
+}
+
+.number-option:active {
+    transform: scale(0.95);
+}
+
+/* Opciones de palabras */
+.word-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.word-option {
+    padding: 15px 25px;
+    border: 3px solid #FFCE32;
+    background: white;
+    color: #1D63FF;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 206, 50, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.word-option:hover {
+    background: #FFCE32;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 206, 50, 0.4);
+}
+
+.word-option:active {
+    transform: translateY(0);
+}
+
+/* Feedback */
+.feedback {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.feedback.success {
+    background: linear-gradient(135deg, #2ECC71, #27AE60);
+    color: white;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.feedback.error {
+    background: linear-gradient(135deg, #E74C3C, #C0392B);
+    color: white;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+/* Controles de actividad */
+.activity-controls {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #ECF0F1;
+}
+
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1D63FF, #4A90E2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(29, 99, 255, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(29, 99, 255, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #95A5A6, #7F8C8D);
+    color: white;
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+}
+
+/* Elementos específicos de actividades */
+.target-color {
+    border: 5px solid #2C3E50 !important;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3) !important;
+    animation: pulse 2s infinite;
+}
+
+.number-display {
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+    animation: bounce 1s ease-in-out;
+}
+
+.word-display {
+    animation: wiggle 0.5s ease-in-out;
+}
+
+.object-display {
+    font-size: 2rem;
+    line-height: 1.5;
+    animation: fadeIn 1s ease-in;
+}
+
+/* Resumen de sesión */
+.activity-summary {
+    text-align: center;
+    padding: 40px;
+    background: linear-gradient(135deg, #FFE5B4, #FFD700);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(255, 206, 50, 0.3);
+}
+
+.activity-summary h3 {
+    color: #1D63FF;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.summary-stats {
+    margin: 30px 0;
+}
+
+.summary-stats p {
+    font-size: 1.3rem;
+    margin: 15px 0;
+    color: #2C3E50;
+}
+
+.summary-stats strong {
+    color: #E74C3C;
+    font-size: 1.5rem;
+}
+
+.summary-actions {
+    margin-top: 30px;
+}
+
+.summary-actions .btn {
+    margin: 0 10px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    75% { transform: rotate(-5deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .activity-container {
+        margin: 10px;
+        padding: 20px;
+    }
+    
+    .activity-header h3 {
+        font-size: 1.5rem;
+    }
+    
+    .color-options {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .number-options {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 10px;
+    }
+    
+    .number-option {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+    
+    .word-options {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .instruction {
+        font-size: 1.1rem;
+    }
+    
+    .feedback {
+        font-size: 1.1rem;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .activity-container {
+        margin: 5px;
+        padding: 15px;
+    }
+    
+    .color-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .number-options {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .word-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-actions .btn {
+        display: block;
+        margin: 10px auto;
+        width: 200px;
+    }
+}
+
+
+

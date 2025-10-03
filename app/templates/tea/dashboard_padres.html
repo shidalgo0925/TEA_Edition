@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍👩‍👧 Dashboard de Padres - TEA Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .header h1 {
+            color: #2C3E50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7F8C8D;
+            font-size: 1.2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #E74C3C;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: #7F8C8D;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .info-title {
+            font-size: 1.3rem;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498DB;
+            padding-bottom: 10px;
+        }
+        
+        .actividad-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ECF0F1;
+        }
+        
+        .actividad-item:last-child {
+            border-bottom: none;
+        }
+        
+        .actividad-nombre {
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        
+        .actividad-completadas {
+            background: #27AE60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .logro-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ECF0F1;
+        }
+        
+        .logro-item:last-child {
+            border-bottom: none;
+        }
+        
+        .logro-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+        
+        .logro-info {
+            flex: 1;
+        }
+        
+        .logro-nombre {
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        
+        .logro-fecha {
+            color: #7F8C8D;
+            font-size: 0.9rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #95A5A6 0%, #7F8C8D 100%);
+        }
+        
+        .nav-btn.success {
+            background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid,
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/tea/" class="nav-button">🏠 Menú Principal</a>
+            <h1>👨‍👩‍👧 Dashboard de Padres</h1>
+            <p>Progreso de <strong>{{ nino.nombre }}</strong> - Edad: {{ nino.edad }} años</p>
+        </div>
+        
+        <!-- Estadísticas Principales -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number">{{ sesiones_semana|length }}</div>
+                <div class="stat-label">Sesiones esta semana</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">
+                    {{ sesiones_semana|sum(attribute='actividades_completadas') }}
+                </div>
+                <div class="stat-label">Actividades completadas</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number">
+                    {{ sesiones_semana|sum(attribute='puntos_ganados') }}
+                </div>
+                <div class="stat-label">Puntos ganados</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-number">
+                    {{ (sesiones_semana|sum(attribute='duracion_minutos') / 60)|round(1) }}h
+                </div>
+                <div class="stat-label">Tiempo total</div>
+            </div>
+        </div>
+        
+        <!-- Gráficos -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">📊 Progreso Semanal</h3>
+                <canvas id="progresoSemanalChart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">🎯 Habilidades</h3>
+                <canvas id="habilidadesChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Información Detallada -->
+        <div class="info-grid">
+            <div class="info-card">
+                <h3 class="info-title">🏆 Actividades Más Completadas</h3>
+                {% for actividad in actividades_stats %}
+                <div class="actividad-item">
+                    <div class="actividad-nombre">{{ actividad.titulo }}</div>
+                    <div class="actividad-completadas">{{ actividad.completadas }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="info-card">
+                <h3 class="info-title">⭐ Logros Recientes</h3>
+                {% for logro in logros_recientes %}
+                <div class="logro-item">
+                    <div class="logro-icon">{{ logro.recompensa.icono_url }}</div>
+                    <div class="logro-info">
+                        <div class="logro-nombre">{{ logro.recompensa.nombre }}</div>
+                        <div class="logro-fecha">{{ logro.fecha_obtenido.strftime('%d/%m/%Y') }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            <a href="/tea/padres/configuracion" class="nav-btn">
+                ⚙️ Configuración
+            </a>
+            <a href="/tea/padres/reportes" class="nav-btn secondary">
+                📊 Reportes
+            </a>
+            <a href="/tea/nino/" class="nav-btn success">
+                👶 Ver Vista del Niño
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Gráfico de Progreso Semanal
+        async function cargarProgresoSemanal() {
+            try {
+                const response = await fetch('/tea/padres/api/progreso-semanal');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('progresoSemanalChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.dia),
+                        datasets: [{
+                            label: 'Actividades Completadas',
+                            data: data.map(d => d.actividades),
+                            borderColor: '#3498DB',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4
+                        }, {
+                            label: 'Puntos Ganados',
+                            data: data.map(d => d.puntos),
+                            borderColor: '#E74C3C',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando progreso semanal:', error);
+            }
+        }
+        
+        // Gráfico de Habilidades
+        async function cargarHabilidades() {
+            try {
+                const response = await fetch('/tea/padres/api/estadisticas-habilidades');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('habilidadesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(h => h.habilidad),
+                        datasets: [{
+                            data: data.map(h => h.progreso_porcentual),
+                            backgroundColor: [
+                                '#3498DB',
+                                '#E74C3C',
+                                '#F39C12',
+                                '#27AE60',
+                                '#9B59B6'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error cargando habilidades:', error);
+            }
+        }
+        
+        // Cargar gráficos al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarProgresoSemanal();
+            cargarHabilidades();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

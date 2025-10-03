@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 1% Mejor Cada Día - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .saludo {
+            font-size: 2.5rem;
+            color: #E74C3C;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nombre-nino {
+            font-size: 2rem;
+            color: #3498DB;
+            font-weight: bold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #E74C3C;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.2rem;
+            color: #7F8C8D;
+        }
+        
+        .actividades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .actividad-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .actividad-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+        
+        .actividad-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .actividad-titulo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+        
+        .actividad-desc {
+            color: #7F8C8D;
+            font-size: 1rem;
+        }
+        
+        .btn-principal {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(231, 76, 60, 0.3);
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+        }
+        
+        .btn-principal:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(231, 76, 60, 0.4);
+        }
+        
+        .logros-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .logros-title {
+            font-size: 1.8rem;
+            color: #E74C3C;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+        }
+        
+        .logro-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .logro-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .saludo {
+                font-size: 2rem;
+            }
+            
+            .nombre-nino {
+                font-size: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actividades-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header con Avatar -->
+        <div class="header">
+            <a href="/tea/" class="nav-button">🏠 Menú Principal</a>
+            <div class="avatar">👩‍🏫</div>
+            <h1 class="saludo">¡Hola!</h1>
+            <h2 class="nombre-nino">{{ nino.nombre }}</h2>
+            <p style="font-size: 1.2rem; color: #7F8C8D; margin-top: 10px;">
+                ¿Listo para aprender algo nuevo hoy? 🌟
+            </p>
+            <div id="voice-support-status" style="margin-top: 15px; padding: 10px; border-radius: 10px; font-size: 0.9rem;">
+                <!-- El estado del reconocimiento de voz se mostrará aquí -->
+            </div>
+        </div>
+        
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number" id="puntos-semana">0</div>
+                <div class="stat-label">Puntos esta semana</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number" id="actividades-semana">0</div>
+                <div class="stat-label">Actividades completadas</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-number" id="racha-actual">0</div>
+                <div class="stat-label">Días seguidos</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number" id="dias-activos">0</div>
+                <div class="stat-label">Días activos</div>
+            </div>
+        </div>
+        
+        <!-- Actividades -->
+        <div class="actividades-grid">
+            <div class="actividad-card" onclick="iniciarActividad('lenguaje')">
+                <div class="actividad-icon">🗣️</div>
+                <div class="actividad-titulo">Lenguaje</div>
+                <div class="actividad-desc">Practica palabras y sonidos</div>
+            </div>
+            
+            <div class="actividad-card" onclick="iniciarActividad('numeros')">
+                <div class="actividad-icon">🔢</div>
+                <div class="actividad-titulo">Números</div>
+                <div class="actividad-desc">Aprende a contar</div>
+            </div>
+            
+            <div class="actividad-card" onclick="iniciarActividad('colores')">
+                <div class="actividad-icon">🎨</div>
+                <div class="actividad-titulo">Colores</div>
+                <div class="actividad-desc">Reconoce los colores</div>
+            </div>
+            
+            <div class="actividad-card" onclick="iniciarActividad('animales')">
+                <div class="actividad-icon">🐶</div>
+                <div class="actividad-titulo">Animales</div>
+                <div class="actividad-desc">Conoce los animales</div>
+            </div>
+        </div>
+        
+        <!-- Botón Principal -->
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn-principal" onclick="iniciarSesion()">
+                🚀 ¡Empezar Aprendizaje!
+            </button>
+        </div>
+        
+        <!-- Logros Recientes -->
+        {% if logros_recientes %}
+        <div class="logros-section">
+            <h3 class="logros-title">🏆 Logros Recientes</h3>
+            <div class="logros-grid">
+                {% for logro in logros_recientes %}
+                <div class="logro-item">
+                    <div class="logro-icon">⭐</div>
+                    <div>{{ logro.recompensa.nombre }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Incluir sistemas de audio y actividades interactivas -->
+    <script src="{{ url_for('static', filename='js/audio_system.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/voice_recognition.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/interactive_activities.js') }}"></script>
+    
+    <script>
+        // Cargar estadísticas
+        async function cargarEstadisticas() {
+            try {
+                const response = await fetch('/tea/nino/api/estadisticas');
+                const data = await response.json();
+                
+                document.getElementById('puntos-semana').textContent = data.puntos_semana || 0;
+                document.getElementById('actividades-semana').textContent = data.actividades_semana || 0;
+                document.getElementById('racha-actual').textContent = data.racha_actual || 0;
+                document.getElementById('dias-activos').textContent = data.dias_activos || 0;
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
+            }
+        }
+        
+        // Iniciar sesión con audio
+        async function iniciarSesion() {
+            try {
+                // Saludar con voz
+                if (window.audioSystem) {
+                    window.audioSystem.greet();
+                }
+                
+                const response = await fetch('/tea/nino/iniciar-sesion');
+                const data = await response.json();
+                
+                if (data.sesion_id) {
+                    // Mostrar mensaje con audio
+                    if (window.audioSystem) {
+                        window.audioSystem.speak('¡Sesión iniciada! ¡Vamos a aprender!');
+                    }
+                    
+                    // Mostrar opciones de actividades interactivas
+                    mostrarOpcionesActividades();
+                }
+            } catch (error) {
+                console.error('Error iniciando sesión:', error);
+                if (window.audioSystem) {
+                    window.audioSystem.speak('Hubo un error. Inténtalo de nuevo.');
+                }
+            }
+        }
+        
+        // Mostrar opciones de actividades interactivas
+        function mostrarOpcionesActividades() {
+            const opcionesHTML = `
+                <div class="activity-options-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 500px;">
+                        <h2 style="color: #1D63FF; margin-bottom: 30px;">🎮 ¡Elige una Actividad!</h2>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                            <button class="activity-button" data-activity="colores" style="padding: 20px; border: none; border-radius: 15px; background: linear-gradient(135deg, #FF6B6B, #FF8E8E); color: white; font-size: 1.2em; cursor: pointer;">
+                                🎨 Colores
+                            </button>
+                            
+                            <button class="activity-button" data-activity="numeros" style="padding: 20px; border: none; border-radius: 15px; background: linear-gradient(135deg, #4ECDC4, #44A08D); color: white; font-size: 1.2em; cursor: pointer;">
+                                🔢 Números
+                            </button>
+                            
+                            <button class="activity-button" data-activity="lenguaje" style="padding: 20px; border: none; border-radius: 15px; background: linear-gradient(135deg, #45B7D1, #96CEB4); color: white; font-size: 1.2em; cursor: pointer;">
+                                🗣️ Lenguaje
+                            </button>
+                            
+                            <button onclick="cerrarModal()" style="padding: 20px; border: none; border-radius: 15px; background: linear-gradient(135deg, #95A5A6, #7F8C8D); color: white; font-size: 1.2em; cursor: pointer;">
+                                ❌ Cerrar
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <button onclick="toggleAudio()" id="audio-toggle" style="padding: 10px 20px; border: 2px solid #1D63FF; background: white; color: #1D63FF; border-radius: 25px; cursor: pointer;">
+                                🔊 Audio: ON
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', opcionesHTML);
+        }
+        
+        // Cerrar modal
+        function cerrarModal() {
+            const modal = document.querySelector('.activity-options-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // Toggle audio
+        function toggleAudio() {
+            if (window.audioSystem) {
+                if (window.audioSystem.isEnabled) {
+                    window.audioSystem.disable();
+                    document.getElementById('audio-toggle').textContent = '🔇 Audio: OFF';
+                    document.getElementById('audio-toggle').style.background = '#FF6B6B';
+                    document.getElementById('audio-toggle').style.color = 'white';
+                } else {
+                    window.audioSystem.enable();
+                    document.getElementById('audio-toggle').textContent = '🔊 Audio: ON';
+                    document.getElementById('audio-toggle').style.background = 'white';
+                    document.getElementById('audio-toggle').style.color = '#1D63FF';
+                }
+            }
+        }
+        
+        // Iniciar actividad específica (ahora interactiva)
+        function iniciarActividad(tipo) {
+            // Cerrar modal si está abierto
+            cerrarModal();
+            
+            // Iniciar actividad interactiva
+            if (window.interactiveActivities) {
+                switch(tipo) {
+                    case 'colores':
+                        window.interactiveActivities.startColorActivity();
+                        break;
+                    case 'numeros':
+                        window.interactiveActivities.startNumberActivity();
+                        break;
+                    case 'lenguaje':
+                        window.interactiveActivities.startLanguageActivity();
+                        break;
+                    default:
+                        // Redirigir a la categoría correspondiente
+                        const rutas = {
+                            'lenguaje': '/tea/actividades/lenguaje',
+                            'numeros': '/tea/actividades/numeros',
+                            'colores': '/tea/actividades/colores',
+                            'animales': '/tea/actividades/animales'
+                        };
+                        
+                        if (rutas[tipo]) {
+                            window.location.href = rutas[tipo];
+                        } else {
+                            window.location.href = '/tea/actividades/';
+                        }
+                }
+            }
+        }
+        
+        // Verificar soporte de reconocimiento de voz
+        function checkVoiceSupport() {
+            const statusDiv = document.getElementById('voice-support-status');
+            
+            if (window.voiceRecognition && window.voiceRecognition.isSupported()) {
+                statusDiv.innerHTML = `
+                    <div style="background: #D5F4E6; color: #27AE60; border: 2px solid #2ECC71; padding: 10px; border-radius: 10px;">
+                        🎤 ¡Puedes hablar con la maestra! Haz clic en "Empezar Aprendizaje" y usa tu voz
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div style="background: #FADBD8; color: #E74C3C; border: 2px solid #E74C3C; padding: 10px; border-radius: 10px;">
+                        ⚠️ Reconocimiento de voz no disponible. Puedes usar los botones para responder
+                    </div>
+                `;
+            }
+        }
+        
+        // Cargar estadísticas al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEstadisticas();
+            checkVoiceSupport();
+            
+            // Saludar automáticamente al cargar
+            setTimeout(() => {
+                if (window.audioSystem) {
+                    window.audioSystem.speak('¡Hola! Bienvenido a tu espacio de aprendizaje. ¿Estás listo para divertirte?');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

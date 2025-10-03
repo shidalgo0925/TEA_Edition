@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Añadir Avance{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>📈 Añadir Avance a Meta</h2>
+  <p class="text-muted">Meta: <strong>{{ meta.titulo }}</strong></p>
+  <p>Categoría: {{ meta.categoria }} — Unidad: {{ meta.unidad }} — Objetivo: {{ meta.valor_objetivo }}</p>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST">
+        <div class="mb-3">
+          <label for="valor" class="form-label">Cantidad avanzada ({{ meta.unidad or "valor" }})</label>
+          <input type="number" step="any" class="form-control" name="valor" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="fecha" class="form-label">Fecha del avance</label>
+          <input type="date" class="form-control" name="fecha" value="{{ today }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="nota" class="form-label">Comentario (opcional)</label>
+          <textarea name="nota" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-success">💾 Registrar Avance</button>
+          <a href="{{ url_for('metas.ver', meta_id=meta.id) }}" class="btn btn-secondary ms-2">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{% block title %}1% Better Apps{% endblock %}</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { min-height: 100vh; }
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: #0d1117;
+      color: #e6edf3;
+      padding: 1rem;
+    }
+    .sidebar .brand { font-weight: 700; letter-spacing: .5px; }
+    .sidebar a {
+      display:block; color:#c9d1d9; text-decoration:none; padding:.5rem .75rem; border-radius:.5rem;
+    }
+    .sidebar a.active, .sidebar a:hover { background:#1f6feb; color:white; }
+    .content { padding: 1rem 1.5rem; background:#f8fafc; }
+    .card-soft { border: 0; border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,.05); }
+    .table thead th { font-weight:600; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand mb-3">1% Better Apps</div>
+      <nav class="d-grid gap-1">
+        <a href="{{ url_for('ai_wizard.ai_plan') }}" class="btn btn-success btn-sm">Crear Plan (IA)</a>
+
+        <a class="{% if request.endpoint=='dashboard.dashboard' %}active{% endif %}" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+        <a class="{% if request.endpoint=='configuracion.config' %}active{% endif %}" href="{{ url_for('configuracion.config') }}">Configuración</a>
+        <a class="{% if request.endpoint=='metas.metas_view' %}active{% endif %}" href="{{ url_for('metas.metas_view') }}">Metas Personales</a>
+        <a href="{{ url_for('misc.privacy') }}">Privacidad</a>
+        <a href="{{ url_for('misc.terms') }}">Términos</a>
+
+        {% if google_connected %}
+          <a href="{{ url_for('auth.google_disconnect') }}">Desconectar Google</a>
+        {% else %}
+          <a href="{{ url_for('auth.google_connect') }}">Conectar Google</a>
+        {% endif %}
+      </nav>
+
+      <hr class="border-secondary my-3">
+      <small class="text-secondary">v1 • {{ stats.hoy if stats else "" }}</small>
+    </aside>
+
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

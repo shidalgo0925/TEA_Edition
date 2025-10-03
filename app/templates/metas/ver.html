@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Progreso de Meta{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>📊 Progreso de Meta</h2>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4>{{ meta.titulo }}</h4>
+		<p>
+		  <strong>Categoría:</strong> {{ meta.categoria or "Sin categoría" }}<br>
+		  <strong>Tipo:</strong> {{ meta.tipo or "No especificado" }}<br>
+		  <strong>Unidad:</strong> {{ meta.unidad or "N/A" }}<br>
+		  <strong>Objetivo:</strong> {{ meta.valor_objetivo }}<br>
+		  <strong>Progreso acumulado:</strong> {{ meta.total_avance() }} / {{ meta.valor_objetivo }} {{ meta.unidad }}
+		</p>
+      <a href="{{ url_for('metas.avanzar', meta_id=meta.id) }}" class="btn btn-success btn-sm">➕ Añadir Avance</a>
+      <a href="{{ url_for('metas.index') }}" class="btn btn-secondary btn-sm">← Volver</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Historial de Avances</h5>
+      {% if avances %}
+        <canvas id="avanceChart" height="100"></canvas>
+      {% else %}
+        <p class="text-muted">Aún no hay avances registrados.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {% if avances %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById('avanceChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [{% for a in avances %}"{{ a.fecha.strftime('%Y-%m-%d') }}"{% if not loop.last %},{% endif %}{% endfor %}],
+          datasets: [{
+            label: 'Avance acumulado',
+            data: [{% for a in avances %}{{ a.valor_acumulado }}{% if not loop.last %},{% endif %}{% endfor %}],
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            tension: 0.2,
+            fill: true,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: '{{ meta.unidad or "Valor" }}' }
+            },
+            x: {
+              title: { display: true, text: 'Fecha' }
+            }
+          }
+        }
+      });
+    </script>
+  {% endif %}
+{% endblock %}

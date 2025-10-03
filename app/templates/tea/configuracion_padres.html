@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚙️ Configuración - TEA Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2C3E50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .config-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .config-title {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498DB;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #BDC3C7;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3498DB;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #BDC3C7;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+        
+        .actividades-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .actividad-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ECF0F1;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #F8F9FA;
+        }
+        
+        .actividad-info {
+            flex: 1;
+        }
+        
+        .actividad-titulo {
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 5px;
+        }
+        
+        .actividad-desc {
+            color: #7F8C8D;
+            font-size: 0.9rem;
+        }
+        
+        .actividad-badges {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-basico {
+            background: #D5F4E6;
+            color: #27AE60;
+        }
+        
+        .badge-intermedio {
+            background: #FEF5E7;
+            color: #F39C12;
+        }
+        
+        .badge-avanzado {
+            background: #FADBD8;
+            color: #E74C3C;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #95A5A6 0%, #7F8C8D 100%);
+        }
+        
+        .success-message {
+            background: #D5F4E6;
+            color: #27AE60;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚙️ Configuración del Sistema</h1>
+            <p>Personaliza la experiencia de aprendizaje para <strong>{{ nino.nombre }}</strong></p>
+        </div>
+        
+        <!-- Mensaje de éxito -->
+        <div class="success-message" id="successMessage">
+            ✅ Configuración actualizada exitosamente
+        </div>
+        
+        <!-- Configuración -->
+        <div class="config-grid">
+            <!-- Configuración del Niño -->
+            <div class="config-card">
+                <h3 class="config-title">👶 Perfil del Niño</h3>
+                
+                <form id="configForm">
+                    <div class="form-group">
+                        <label class="form-label">Nivel de Dificultad</label>
+                        <select class="form-select" name="nivel_dificultad" id="nivelDificultad">
+                            <option value="basico" {% if nino.nivel_dificultad == 'basico' %}selected{% endif %}>
+                                Básico - Actividades simples
+                            </option>
+                            <option value="intermedio" {% if nino.nivel_dificultad == 'intermedio' %}selected{% endif %}>
+                                Intermedio - Actividades moderadas
+                            </option>
+                            <option value="avanzado" {% if nino.nivel_dificultad == 'avanzado' %}selected{% endif %}>
+                                Avanzado - Actividades complejas
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tiempo de Sesión (minutos)</label>
+                        <input type="number" class="form-control" name="tiempo_sesion_min" 
+                               id="tiempoSesion" value="{{ nino.tiempo_sesion_min }}" 
+                               min="5" max="60">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Avatar Preferido</label>
+                        <select class="form-select" name="avatar_preferido" id="avatarPreferido">
+                            <option value="maestra_ana" {% if nino.avatar_preferido == 'maestra_ana' %}selected{% endif %}>
+                                👩‍🏫 Maestra Ana
+                            </option>
+                            <option value="profesor_carlos" {% if nino.avatar_preferido == 'profesor_carlos' %}selected{% endif %}>
+                                👨‍🏫 Profesor Carlos
+                            </option>
+                            <option value="amiga_luna" {% if nino.avatar_preferido == 'amiga_luna' %}selected{% endif %}>
+                                👧 Amiga Luna
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-save">
+                        💾 Guardar Configuración
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Actividades Disponibles -->
+            <div class="config-card">
+                <h3 class="config-title">🎯 Actividades Disponibles</h3>
+                
+                <div class="actividades-list">
+                    {% for actividad in actividades %}
+                    <div class="actividad-item">
+                        <div class="actividad-info">
+                            <div class="actividad-titulo">{{ actividad.titulo }}</div>
+                            <div class="actividad-desc">{{ actividad.descripcion }}</div>
+                        </div>
+                        <div class="actividad-badges">
+                            <span class="badge badge-{{ actividad.nivel_dificultad }}">
+                                {{ actividad.nivel_dificultad.title() }}
+                            </span>
+                            <span class="badge" style="background: #E3F2FD; color: #1976D2;">
+                                {{ actividad.categoria.title() }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            <a href="/tea/padres/" class="nav-btn">
+                📊 Dashboard
+            </a>
+            <a href="/tea/padres/reportes" class="nav-btn secondary">
+                📋 Reportes
+            </a>
+            <a href="/tea/nino/" class="nav-btn">
+                👶 Vista del Niño
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Manejar envío del formulario
+        document.getElementById('configForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const configData = {
+                nivel_dificultad: formData.get('nivel_dificultad'),
+                tiempo_sesion_min: parseInt(formData.get('tiempo_sesion_min')),
+                avatar_preferido: formData.get('avatar_preferido')
+            };
+            
+            try {
+                const response = await fetch('/tea/padres/api/actualizar-configuracion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(configData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Mostrar mensaje de éxito
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.style.display = 'block';
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Ocultar mensaje después de 3 segundos
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('Error al actualizar configuración: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al actualizar configuración');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Iniciar Sesión - TEA Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2C3E50;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            color: #E74C3C;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7F8C8D;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Comic Sans MS', cursive;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #E74C3C;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            box-shadow: 0 8px 32px rgba(231, 76, 60, 0.3);
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 12px 40px rgba(52, 152, 219, 0.4);
+        }
+        
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .links a {
+            color: #E74C3C;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .alert-error {
+            background: #FFE6E6;
+            color: #D63031;
+            border: 2px solid #D63031;
+        }
+        
+        .alert-success {
+            background: #E6F7E6;
+            color: #00B894;
+            border: 2px solid #00B894;
+        }
+        
+        .alert-info {
+            background: #E6F3FF;
+            color: #0984E3;
+            border: 2px solid #0984E3;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .user-type-option {
+            flex: 1;
+            padding: 15px;
+            background: #F8F9FA;
+            border: none;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .user-type-option.active {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+        }
+        
+        .user-type-option:hover {
+            background: #E9ECEF;
+        }
+        
+        .user-type-option.active:hover {
+            background: linear-gradient(135deg, #C0392B 0%, #A93226 100%);
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🧠</div>
+        <h1 class="title">TEA Edition</h1>
+        <p class="subtitle">Inicia sesión para continuar</p>
+        
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <!-- Selector de tipo de usuario -->
+            <div class="user-type-selector">
+                <button type="button" class="user-type-option active" data-type="padre">
+                    👨‍👩‍👧‍👦 Padre/Tutor
+                </button>
+                <button type="button" class="user-type-option" data-type="nino">
+                    👶 Niño
+                </button>
+            </div>
+            
+            <input type="hidden" name="tipo_usuario" id="tipo_usuario" value="padre">
+            
+            <div class="form-group">
+                <label for="email">
+                    <span id="email-label">📧 Email</span>
+                </label>
+                <input type="text" id="email" name="email" required 
+                       placeholder="Ingresa tu email o nombre de usuario">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">🔒 Contraseña</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Ingresa tu contraseña">
+            </div>
+            
+            <button type="submit" class="btn">
+                🚀 Iniciar Sesión
+            </button>
+        </form>
+        
+        <div class="links">
+            <a href="{{ url_for('tea.auth.register') }}">📝 Registrarse</a>
+            <a href="{{ url_for('tea.index') }}">🏠 Volver al Inicio</a>
+        </div>
+    </div>
+    
+    <script>
+        // Manejar selector de tipo de usuario
+        document.querySelectorAll('.user-type-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remover clase active de todos
+                document.querySelectorAll('.user-type-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                
+                // Agregar clase active al seleccionado
+                this.classList.add('active');
+                
+                // Actualizar valor oculto
+                document.getElementById('tipo_usuario').value = this.dataset.type;
+                
+                // Actualizar label y placeholder
+                const emailLabel = document.getElementById('email-label');
+                const emailInput = document.getElementById('email');
+                
+                if (this.dataset.type === 'nino') {
+                    emailLabel.textContent = '👤 Nombre de Usuario';
+                    emailInput.placeholder = 'Ingresa tu nombre de usuario';
+                } else {
+                    emailLabel.textContent = '📧 Email';
+                    emailInput.placeholder = 'Ingresa tu email';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

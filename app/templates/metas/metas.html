@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Metas Personales{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">🎯 Metas Personales</h2>
+
+  <form method="POST" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <input type="text" class="form-control" name="titulo" placeholder="Título" required>
+    </div>
+    <div class="col-md-2">
+      <input type="text" class="form-control" name="categoria" placeholder="Categoría">
+    </div>
+    <div class="col-md-2">
+      <input type="text" class="form-control" name="tipo" placeholder="Tipo (Emocional, Físico)">
+    </div>
+    <div class="col-md-2">
+      <input type="text" class="form-control" name="unidad" placeholder="Unidad (km, USD, libros)" required>
+    </div>
+    <div class="col-md-2">
+      <input type="number" step="0.1" class="form-control" name="valor_objetivo" placeholder="Valor objetivo" required>
+    </div>
+    <div class="col-md-1 d-grid">
+      <button type="submit" class="btn btn-success">➕</button>
+    </div>
+  </form>
+
+  {% if metas %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Tipo</th>
+            <th>Unidad</th>
+            <th>Objetivo</th>
+            <th>Avance</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for meta in metas %}
+          <tr>
+            <td>{{ meta.titulo }}</td>
+            <td>{{ meta.categoria or '-' }}</td>
+            <td>{{ meta.tipo or '-' }}</td>
+            <td>{{ meta.unidad }}</td>
+            <td>{{ meta.valor_objetivo }}</td>
+            <td>
+              {% set total = meta.avances | map(attribute='valor') | sum %}
+              {{ total }}
+              {% if total < meta.valor_objetivo %}
+                <small class="text-muted">({{ (total / meta.valor_objetivo * 100) | round(1) }}%)</small>
+              {% else %}
+                ✅
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('metas.editar_meta', meta_id=meta.id) }}" class="btn btn-outline-primary btn-sm">✏️ Editar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted">No hay metas registradas aún.</p>
+  {% endif %}
+</div>
+{% endblock %}

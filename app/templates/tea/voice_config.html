@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎤 Configuración de Voz - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+            padding: 20px;
+        }
+        
+        .config-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, #1D63FF 0%, #0D47A1 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(29, 99, 255, 0.3);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 99, 255, 0.4);
+        }
+        
+        .config-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #FFCE32;
+        }
+        
+        .config-header h1 {
+            color: #1D63FF;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .config-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            border-left: 5px solid #1D63FF;
+        }
+        
+        .config-section h3 {
+            color: #1D63FF;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .config-group {
+            margin-bottom: 20px;
+        }
+        
+        .config-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2C3E50;
+        }
+        
+        .config-group select,
+        .config-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #FFCE32;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        .config-group select:focus,
+        .config-group input[type="range"]:focus {
+            outline: none;
+            border-color: #1D63FF;
+            box-shadow: 0 0 10px rgba(29, 99, 255, 0.3);
+        }
+        
+        .range-value {
+            display: inline-block;
+            background: #1D63FF;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .voice-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #FFCE32;
+            border-radius: 10px;
+            background: white;
+        }
+        
+        .voice-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ECF0F1;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .voice-item:hover {
+            background: #F8F9FA;
+        }
+        
+        .voice-item.selected {
+            background: #1D63FF;
+            color: white;
+        }
+        
+        .voice-item:last-child {
+            border-bottom: none;
+        }
+        
+        .voice-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .voice-details {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+        }
+        
+        .voice-item.selected .voice-details {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .test-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #FFCE32, #FFA500);
+            border-radius: 15px;
+        }
+        
+        .test-text {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .test-button {
+            background: #1D63FF;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .test-button:hover {
+            background: #0D4FCC;
+            transform: translateY(-2px);
+        }
+        
+        .save-button {
+            background: linear-gradient(135deg, #2ECC71, #27AE60);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .save-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+        }
+        
+        .back-button {
+            background: linear-gradient(135deg, #95A5A6, #7F8C8D);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background: #D5F4E6;
+            color: #27AE60;
+            border: 2px solid #2ECC71;
+        }
+        
+        .status-error {
+            background: #FADBD8;
+            color: #E74C3C;
+            border: 2px solid #E74C3C;
+        }
+    </style>
+</head>
+<body>
+    <div class="config-container">
+        <div class="config-header">
+            <a href="/tea/padres/" class="nav-button">🔙 Volver</a>
+            <h1>🎤 Configuración de Voz del Avatar</h1>
+            <p>Personaliza la voz de la maestra virtual para tu hijo</p>
+        </div>
+        
+        <div id="status-message"></div>
+        
+        <!-- Configuración de Género -->
+        <div class="config-section">
+            <h3>👤 Género de la Voz</h3>
+            <div class="config-group">
+                <label for="voice-gender">Selecciona el género de la voz:</label>
+                <select id="voice-gender">
+                    <option value="female">👩 Femenina</option>
+                    <option value="male">👨 Masculina</option>
+                    <option value="any">🤷 Cualquiera</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Configuración de Idioma -->
+        <div class="config-section">
+            <h3>🌍 Idioma</h3>
+            <div class="config-group">
+                <label for="voice-language">Selecciona el idioma:</label>
+                <select id="voice-language">
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="en">🇺🇸 Inglés</option>
+                    <option value="any">🌐 Cualquiera</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Configuración de Velocidad -->
+        <div class="config-section">
+            <h3>⚡ Velocidad de Voz</h3>
+            <div class="config-group">
+                <label for="voice-speed">
+                    Velocidad: <span class="range-value" id="speed-value">0.9</span>
+                </label>
+                <input type="range" id="voice-speed" min="0.1" max="2.0" step="0.1" value="0.9">
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #7F8C8D; margin-top: 5px;">
+                    <span>Lenta</span>
+                    <span>Rápida</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Configuración de Tono -->
+        <div class="config-section">
+            <h3>🎵 Tono de Voz</h3>
+            <div class="config-group">
+                <label for="voice-pitch">
+                    Tono: <span class="range-value" id="pitch-value">1.1</span>
+                </label>
+                <input type="range" id="voice-pitch" min="0.0" max="2.0" step="0.1" value="1.1">
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #7F8C8D; margin-top: 5px;">
+                    <span>Grave</span>
+                    <span>Agudo</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Configuración de Volumen -->
+        <div class="config-section">
+            <h3>🔊 Volumen</h3>
+            <div class="config-group">
+                <label for="voice-volume">
+                    Volumen: <span class="range-value" id="volume-value">0.8</span>
+                </label>
+                <input type="range" id="voice-volume" min="0.0" max="1.0" step="0.1" value="0.8">
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #7F8C8D; margin-top: 5px;">
+                    <span>Silencioso</span>
+                    <span>Alto</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Voces Disponibles -->
+        <div class="config-section">
+            <h3>🎤 Voces Disponibles</h3>
+            <div class="config-group">
+                <label>Selecciona una voz específica:</label>
+                <div class="voice-list" id="voice-list">
+                    <!-- Las voces se cargarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prueba de Voz -->
+        <div class="test-section">
+            <h3>🎧 Prueba de Voz</h3>
+            <input type="text" class="test-text" id="test-text" 
+                   value="Hola, soy tu maestra virtual. ¿Cómo estás hoy?" 
+                   placeholder="Escribe el texto que quieres escuchar">
+            <br>
+            <button class="test-button" onclick="testVoice()">🔊 Probar Voz</button>
+            <button class="test-button" onclick="testDefaultMessage()">💬 Mensaje de Prueba</button>
+        </div>
+        
+        <!-- Botón Guardar -->
+        <button class="save-button" onclick="saveVoiceConfig()">
+            💾 Guardar Configuración
+        </button>
+    </div>
+    
+    <!-- Incluir sistema de audio -->
+    <script src="{{ url_for('static', filename='js/audio_system.js') }}"></script>
+    
+    <script>
+        let currentConfig = {};
+        let availableVoices = [];
+        
+        // Cargar configuración actual
+        async function loadCurrentConfig() {
+            try {
+                const response = await fetch('/tea/voice-config/api/config');
+                currentConfig = await response.json();
+                
+                // Aplicar configuración a los controles
+                document.getElementById('voice-gender').value = currentConfig.gender;
+                document.getElementById('voice-language').value = currentConfig.language;
+                document.getElementById('voice-speed').value = currentConfig.speed;
+                document.getElementById('voice-pitch').value = currentConfig.pitch;
+                document.getElementById('voice-volume').value = currentConfig.volume;
+                
+                // Actualizar valores mostrados
+                updateRangeValues();
+                
+            } catch (error) {
+                console.error('Error cargando configuración:', error);
+                showStatus('Error cargando configuración', 'error');
+            }
+        }
+        
+        // Cargar voces disponibles
+        async function loadAvailableVoices() {
+            try {
+                const response = await fetch('/tea/voice-config/api/voices');
+                availableVoices = await response.json();
+                
+                const voiceList = document.getElementById('voice-list');
+                voiceList.innerHTML = '';
+                
+                availableVoices.forEach(voice => {
+                    const voiceItem = document.createElement('div');
+                    voiceItem.className = `voice-item ${voice.isCurrent ? 'selected' : ''}`;
+                    voiceItem.onclick = () => selectVoice(voice);
+                    
+                    voiceItem.innerHTML = `
+                        <div class="voice-name">${voice.name}</div>
+                        <div class="voice-details">
+                            ${voice.lang} | ${voice.gender === 'female' ? '👩 Femenina' : voice.gender === 'male' ? '👨 Masculina' : '🤷 Desconocido'}
+                        </div>
+                    `;
+                    
+                    voiceList.appendChild(voiceItem);
+                });
+                
+            } catch (error) {
+                console.error('Error cargando voces:', error);
+            }
+        }
+        
+        // Seleccionar voz
+        function selectVoice(voice) {
+            // Remover selección anterior
+            document.querySelectorAll('.voice-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Seleccionar nueva voz
+            event.target.closest('.voice-item').classList.add('selected');
+            
+            // Aplicar configuración de género según la voz seleccionada
+            if (voice.gender === 'female') {
+                document.getElementById('voice-gender').value = 'female';
+            } else if (voice.gender === 'male') {
+                document.getElementById('voice-gender').value = 'male';
+            }
+        }
+        
+        // Actualizar valores de los rangos
+        function updateRangeValues() {
+            document.getElementById('speed-value').textContent = document.getElementById('voice-speed').value;
+            document.getElementById('pitch-value').textContent = document.getElementById('voice-pitch').value;
+            document.getElementById('volume-value').textContent = document.getElementById('voice-volume').value;
+        }
+        
+        // Event listeners para los rangos
+        document.getElementById('voice-speed').addEventListener('input', updateRangeValues);
+        document.getElementById('voice-pitch').addEventListener('input', updateRangeValues);
+        document.getElementById('voice-volume').addEventListener('input', updateRangeValues);
+        
+        // Probar voz
+        function testVoice() {
+            const text = document.getElementById('test-text').value;
+            if (!text.trim()) {
+                showStatus('Por favor, escribe un texto para probar', 'error');
+                return;
+            }
+            
+            if (window.audioSystem) {
+                // Aplicar configuración temporal
+                const tempConfig = {
+                    gender: document.getElementById('voice-gender').value,
+                    language: document.getElementById('voice-language').value,
+                    speed: parseFloat(document.getElementById('voice-speed').value),
+                    pitch: parseFloat(document.getElementById('voice-pitch').value),
+                    volume: parseFloat(document.getElementById('voice-volume').value)
+                };
+                
+                // Configurar voz temporalmente
+                window.audioSystem.voiceConfig = { ...window.audioSystem.voiceConfig, ...tempConfig };
+                window.audioSystem.loadVoices();
+                
+                // Hablar
+                window.audioSystem.speak(text);
+                showStatus('Reproduciendo voz de prueba...', 'success');
+            } else {
+                showStatus('Sistema de audio no disponible', 'error');
+            }
+        }
+        
+        // Probar mensaje por defecto
+        function testDefaultMessage() {
+            const defaultMessages = [
+                "¡Hola! Soy tu maestra virtual. ¿Cómo estás hoy?",
+                "¡Buenos días! ¿Estás listo para aprender?",
+                "¡Excelente trabajo! ¡Lo estás haciendo muy bien!",
+                "Vamos a practicar juntos. ¿Te parece bien?",
+                "¡Muy bien! ¡Eres muy inteligente!"
+            ];
+            
+            const randomMessage = defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
+            document.getElementById('test-text').value = randomMessage;
+            testVoice();
+        }
+        
+        // Guardar configuración
+        async function saveVoiceConfig() {
+            const config = {
+                gender: document.getElementById('voice-gender').value,
+                language: document.getElementById('voice-language').value,
+                speed: parseFloat(document.getElementById('voice-speed').value),
+                pitch: parseFloat(document.getElementById('voice-pitch').value),
+                volume: parseFloat(document.getElementById('voice-volume').value)
+            };
+            
+            try {
+                const response = await fetch('/tea/voice-config/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Guardar en el sistema de audio
+                    if (window.audioSystem) {
+                        window.audioSystem.voiceConfig = config;
+                        window.audioSystem.saveVoiceConfig();
+                        window.audioSystem.loadVoices();
+                    }
+                    
+                    showStatus('Configuración guardada exitosamente', 'success');
+                } else {
+                    showStatus('Error al guardar la configuración', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error guardando configuración:', error);
+                showStatus('Error al guardar la configuración', 'error');
+            }
+        }
+        
+        // Mostrar mensaje de estado
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            
+            // Ocultar mensaje después de 3 segundos
+            setTimeout(() => {
+                statusDiv.textContent = '';
+                statusDiv.className = '';
+            }, 3000);
+        }
+        
+        // Cargar datos al inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentConfig();
+            loadAvailableVoices();
+        });
+    </script>
+</body>
+</html>
+
+
+

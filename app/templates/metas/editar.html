@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Editar Meta{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>✏️ Editar Meta</h2>
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Título</label>
+        <input type="text" class="form-control" name="titulo" value="{{ meta.titulo }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Categoría</label>
+        <select class="form-select" name="categoria">
+          <option value="">Seleccione...</option>
+          {% for c in ['Salud', 'Ejercicio', 'Finanzas', 'Lectura'] %}
+          <option value="{{ c }}" {% if meta.categoria == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Tipo de Acompañamiento</label>
+        <select class="form-select" name="tipo">
+          <option value="">Seleccione...</option>
+          {% for t in ['Autoguiado', 'Con terapeuta', 'Con mentor', 'Grupo de apoyo'] %}
+          <option value="{{ t }}" {% if meta.tipo == t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Unidad</label>
+        <input type="text" class="form-control" name="unidad" value="{{ meta.unidad }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Valor Objetivo</label>
+        <input type="number" class="form-control" name="valor_objetivo" step="0.01" value="{{ meta.valor_objetivo }}" required>
+      </div>
+      <div class="col-md-4 align-self-end">
+        <button type="submit" class="btn btn-primary w-100">💾 Guardar Cambios</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="mt-4">
+    <a href="{{ url_for('metas.metas_view') }}" class="btn btn-secondary">← Volver</a>
+  </div>
+</div>
+{% endblock %}

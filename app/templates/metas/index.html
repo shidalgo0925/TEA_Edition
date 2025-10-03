@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Mis Metas Personales{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">📌 Metas Personales</h1>
+
+  <a href="{{ url_for('metas.nueva') }}" class="btn btn-primary mb-3">➕ Nueva Meta</a>
+
+  {% if metas %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Categoría</th>
+            <th>Título</th>
+            <th>Unidad</th>
+            <th>Objetivo</th>
+            <th>Avance Actual</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for meta in metas %}
+            <tr>
+              <td>{{ meta.categoria }}</td>
+              <td>{{ meta.titulo }}</td>
+              <td>{{ meta.unidad }}</td>
+              <td>{{ meta.valor_objetivo }}</td>
+              <td>
+                {% set total = meta.avances | map(attribute='valor') | sum %}
+                {{ total }} {{ meta.unidad }}
+              </td>
+              <td>
+                <a href="{{ url_for('metas.ver', meta_id=meta.id) }}" class="btn btn-sm btn-outline-info">👁 Ver</a>
+                <a href="{{ url_for('metas.avanzar', meta_id=meta.id) }}" class="btn btn-sm btn-outline-success">➕ Avanzar</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info">Aún no has definido metas personales.</div>
+  {% endif %}
+</div>
+{% endblock %}

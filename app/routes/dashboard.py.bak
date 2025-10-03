@@ -1,0 +1,54 @@
+# -*- coding: utf-8 -*-
+from datetime import datetime
+import os
+
+from flask import Blueprint, render_template
+from config import TOKEN_FILE
+from app.utils.google_calendar import get_today_events
+from .auth import get_credentials
+
+dashboard_bp = Blueprint("dashboard", __name__)
+misc_bp = Blueprint("misc", __name__)
+
+@dashboard_bp.route("/")
+def dashboard():
+    stats = {
+        "meta_dic": 5000,
+        "prospeccion_min": 30,
+        "hoy": datetime.now().strftime("%Y-%m-%d"),
+    }
+
+    events = []
+    google_connected = os.path.exists(TOKEN_FILE)
+
+    if google_connected:
+        creds = get_credentials()
+        if creds:
+            try:
+                events = get_today_events(creds)
+            except Exception:
+                # Si falla Google Calendar, usamos eventos de respaldo
+                events = []
+        else:
+            google_connected = False
+
+    # Respaldo si no hay conexion Google aun
+    if not events:
+        events = [
+            {"hora": "07:30 - 08:30", "actividad": "Proyecto Odoo (Import Center)", "categoria": "Easytech", "done": False},
+            {"hora": "08:30 - 09:00", "actividad": "Curso Big Data (capsula diaria)", "categoria": "Personal", "done": False},
+            {"hora": "09:00 - 09:30", "actividad": "Prospeccion Mariachi", "categoria": "Mariachi", "done": False},
+        ]
+
+    stats["total_eventos"] = len(events)
+    stats["completados"] = sum(1 for e in events if e.get("done"))
+
+    return render_template("dashboard.html", events=events, stats=stats, google_connected=google_connected)
+
+@misc_bp.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+@misc_bp.route("/terms")
+def terms():
+    return render_template("terms.html")

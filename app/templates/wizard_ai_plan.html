@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Wizard Plan IA{% endblock %}
+{% block content %}
+<div class="container">
+  <h4 class="mb-3">Crea tu plan con IA</h4>
+
+  <div class="progress mb-3" role="progressbar">
+    <div id="wizProgress" class="progress-bar" style="width: 14%;">Paso 1/7</div>
+  </div>
+
+  <div id="step1" class="card card-soft p-3 mb-3">
+    <h6>1) Áreas de metas</h6>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Personal" id="areaPersonal" checked><label class="form-check-label" for="areaPersonal">Personal</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Económico" id="areaEconomico" checked><label class="form-check-label" for="areaEconomico">Económico</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Familiar" id="areaFamiliar" checked><label class="form-check-label" for="areaFamiliar">Familiar</label></div>
+    <div class="form-check"><input class="form-check-input" type="checkbox" value="Físico" id="areaFisico" checked><label class="form-check-label" for="areaFisico">Físico</label></div>
+  </div>
+
+  <div id="step2" class="card card-soft p-3 mb-3 d-none">
+    <h6>2) Metas crudas (texto libre)</h6>
+    <textarea id="metasCrudas" class="form-control" rows="6" placeholder="- Salir de deudas
+- Mejorar salud (caminar 20min diario)
+- Fortalecer relación con mis hijos"></textarea>
+  </div>
+
+  <div id="step3" class="card card-soft p-3 mb-3 d-none">
+    <h6>3) Detalles clave</h6>
+    <div class="row g-2">
+      <div class="col-md-6">
+        <label class="form-label">Restricciones (JSON)</label>
+        <textarea id="restricciones" class="form-control" rows="4">{ "presupuesto_mensual": 0 }</textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Horizonte</label>
+        <select id="horizonte" class="form-select">
+          <option value="30d">30 días</option>
+          <option value="90d" selected>90 días</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="step4" class="card card-soft p-3 mb-3 d-none">
+    <h6>4) Metas SMART (borrador IA)</h6>
+    <pre id="smartPreview" class="bg-light p-2 small mb-0">-- aún vacío --</pre>
+  </div>
+
+  <div id="step5" class="card card-soft p-3 mb-3 d-none">
+    <h6>5) Rocas semanales + Microacciones</h6>
+    <pre id="breakdownPreview" class="bg-light p-2 small mb-0">-- aún vacío --</pre>
+  </div>
+
+  <div id="step6" class="card card-soft p-3 mb-3 d-none">
+    <h6>6) Ajuste con Calendario</h6>
+    <p class="small text-muted mb-1">Se mapean microacciones a ventanas libres (America/Panama). Si no hay Google conectado, igual puedes continuar.</p>
+    <pre id="calendarPreview" class="bg-light p-2 small mb-0">-- aún vacío --</pre>
+  </div>
+
+  <div id="step7" class="card card-soft p-3 mb-3 d-none">
+    <h6>7) Revisión y Confirmación</h6>
+    <pre id="finalPreview" class="bg-light p-2 small mb-2">-- aún vacío --</pre>
+    <button id="btnCommit" class="btn btn-success">Guardar plan</button>
+    <span id="commitMsg" class="ms-2"></span>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button id="btnBack" class="btn btn-outline-secondary" disabled>Atrás</button>
+    <button id="btnNext" class="btn btn-primary">Siguiente</button>
+  </div>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/coach.js') }}"></script>
+{% endblock %}
+{% endblock %}

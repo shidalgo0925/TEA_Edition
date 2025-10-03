@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Actividades - TEA Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        .saludo {
+            font-size: 2rem;
+            color: #E74C3C;
+            margin-bottom: 10px;
+        }
+        
+        .categorias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .categoria-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .categoria-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .categoria-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .categoria-titulo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 15px;
+        }
+        
+        .categoria-desc {
+            color: #7F8C8D;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .categoria-btn {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .categoria-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .actividades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .actividad-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .actividad-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .actividad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .actividad-titulo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        
+        .actividad-puntos {
+            background: #F39C12;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .actividad-desc {
+            color: #7F8C8D;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .actividad-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .actividad-tiempo {
+            color: #3498DB;
+            font-weight: bold;
+        }
+        
+        .actividad-dificultad {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .dificultad-basico {
+            background: #D5F4E6;
+            color: #27AE60;
+        }
+        
+        .dificultad-intermedio {
+            background: #FEF5E7;
+            color: #F39C12;
+        }
+        
+        .dificultad-avanzado {
+            background: #FADBD8;
+            color: #E74C3C;
+        }
+        
+        .btn-jugar {
+            background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-jugar:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .categorias-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actividades-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/tea/nino/" class="nav-button">🔙 Volver</a>
+            <div class="avatar">👩‍🏫</div>
+            <h1 class="saludo">¡Hola {{ nino.nombre }}!</h1>
+            <p style="font-size: 1.2rem; color: #7F8C8D;">
+                ¿Qué quieres aprender hoy? 🌟
+            </p>
+        </div>
+        
+        <!-- Categorías -->
+        <div class="categorias-grid">
+            <a href="/tea/actividades/lenguaje" class="categoria-card">
+                <div class="categoria-icon">🗣️</div>
+                <div class="categoria-titulo">Lenguaje</div>
+                <div class="categoria-desc">Practica palabras y sonidos</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </a>
+            
+            <a href="/tea/actividades/numeros" class="categoria-card">
+                <div class="categoria-icon">🔢</div>
+                <div class="categoria-titulo">Números</div>
+                <div class="categoria-desc">Aprende a contar</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </a>
+            
+            <a href="/tea/actividades/colores" class="categoria-card">
+                <div class="categoria-icon">🎨</div>
+                <div class="categoria-titulo">Colores</div>
+                <div class="categoria-desc">Reconoce los colores</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </a>
+            
+            <a href="/tea/actividades/animales" class="categoria-card">
+                <div class="categoria-icon">🐶</div>
+                <div class="categoria-titulo">Animales</div>
+                <div class="categoria-desc">Conoce los animales</div>
+                <button class="categoria-btn">¡Empezar!</button>
+            </a>
+        </div>
+        
+        <!-- Actividades Disponibles -->
+        <div class="actividades-grid">
+            {% for actividad in actividades %}
+            <div class="actividad-card">
+                <div class="actividad-header">
+                    <div class="actividad-titulo">{{ actividad.titulo }}</div>
+                    <div class="actividad-puntos">⭐ {{ actividad.puntos_recompensa }}</div>
+                </div>
+                
+                <div class="actividad-desc">{{ actividad.descripcion }}</div>
+                
+                <div class="actividad-meta">
+                    <div class="actividad-tiempo">⏱️ {{ actividad.tiempo_estimado }} min</div>
+                    <div class="actividad-dificultad dificultad-{{ actividad.nivel_dificultad }}">
+                        {{ actividad.nivel_dificultad.title() }}
+                    </div>
+                </div>
+                
+                <button class="btn-jugar" onclick="jugarActividad({{ actividad.id }})">
+                    🎮 ¡Jugar!
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            <a href="/tea/nino/" class="nav-btn">
+                🏠 Dashboard
+            </a>
+            <a href="/tea/padres/" class="nav-btn">
+                👨‍👩‍👧 Ver Progreso
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        function jugarActividad(actividadId) {
+            window.location.href = `/tea/actividades/${actividadId}`;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,9 @@
+Flask==3.0.2
+google-api-python-client==2.141.0
+google-auth==2.33.0
+google-auth-oauthlib==1.2.1
+backports.zoneinfo
+pytz
+SQLAlchemy>=2.0
+psycopg2-binary>=2.9
+alembic>=1.13

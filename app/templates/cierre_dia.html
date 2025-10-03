@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Cierre del Día{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h3 class="mb-3">🙏 Cierre del Día — {{ hoy.strftime('%Y-%m-%d') }}</h3>
+
+  <form method="POST" class="card card-soft p-4">
+    <div class="mb-3">
+      <label class="form-label">¿Cómo te sientes hoy?</label>
+      <input type="text" class="form-control" name="emocion" placeholder="Ej: agradecido, frustrado..." value="{{ entry.emocion if entry else '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué aprendiste o agradeces hoy?</label>
+      <textarea class="form-control" name="reflexion" rows="5" placeholder="Escribe tu reflexión...">{{ entry.reflexion if entry else '' }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar y cerrar día</button>
+  </form>
+
+  {% if entry %}
+  <div class="alert alert-info mt-4">
+    <strong>Registro guardado:</strong> "{{ entry.reflexion or 'Sin reflexión' }}"
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+/* tamaño y comportamiento del logo */
+.brand-logo { height: 38px; width: auto; display: inline-block; }
+.brand-wrap { display:flex; align-items:center; gap:.6rem; }
+.brand-title { font-weight:700; font-size:1.05rem; letter-spacing:.2px; }
+@media (max-width: 768px){ .brand-title{ display:none; } }

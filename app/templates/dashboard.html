@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-xxl-10">
+      <div class="card card-soft mb-3 p-3">
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+          <div><strong>Cuenta de Google:</strong>
+            {% if google_connected %} ✅ Conectada {% else %} ❌ No conectada {% endif %}
+          </div>
+          <div><strong>Hoy:</strong> {{ stats.hoy }}</div>
+          <div><strong>Meta DIC:</strong> {{ stats.meta_dic }}</div>
+          <div><strong>Prospección (min):</strong> {{ stats.prospeccion_min }}</div>
+          <div><strong>Eventos:</strong> {{ stats.total_eventos }}</div>
+          <div><strong>Completados:</strong> {{ stats.completados }}</div>
+        </div>
+      </div>
+
+		<div class="card card-soft p-3 mb-3">
+		  <div class="d-flex justify-content-between align-items-center mb-2">
+			<h5 class="m-0">
+			  Plan {{ plan_is_today and "de Hoy" or ("para " ~ plan_date) }}
+			  {% if not plan_is_today and plan_items_today %}
+				<span class="badge bg-secondary ms-2">Próximo</span>
+			  {% endif %}
+			</h5>
+
+			<div class="d-flex gap-2">
+			  {% if not plan_is_today and plan_items_today %}
+				<button id="btnMoveToToday" class="btn btn-outline-primary btn-sm">Mover a hoy</button>
+			  {% endif %}
+			  {% if not plan_items_today %}
+				<a class="btn btn-success btn-sm" href="{{ url_for('ai_wizard.ai_plan') }}">Crear Plan (IA)</a>
+			  {% endif %}
+			</div>
+		  </div>
+
+		  {% if plan_items_today %}
+			<div class="table-responsive">
+			  <table class="table table-sm table-hover align-middle">
+				<thead>
+				  <tr>
+					<th>Tarea</th>
+					<th style="width:120px">Categoría</th>
+					<th style="width:90px">Prioridad</th>
+					<th style="width:90px">Min</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  {% for it in plan_items_today %}
+				  <tr>
+					<td>{{ it.titulo }}</td>
+					<td>{{ it.categoria or '-' }}</td>
+					<td>{{ it.prioridad or '-' }}</td>
+					<td>{{ it.dur_min or '-' }}</td>
+				  </tr>
+				  {% endfor %}
+				</tbody>
+			  </table>
+			</div>
+		  {% else %}
+			<div class="text-muted">Aún no tienes microacciones para hoy.</div>
+		  {% endif %}
+		</div>
+
+		{% block scripts %}
+		  {{ super() }}
+		  <script>
+		  (function(){
+			const btn = document.getElementById('btnMoveToToday');
+			if(!btn) return;
+			btn.addEventListener('click', async ()=>{
+			  btn.disabled = true;
+			  const fromDate = "{{ plan_date }}";
+			  const res = await fetch('/api/ai/plan/move_to_today', {
+				method:'POST',
+				headers:{'Content-Type':'application/json'},
+				body: JSON.stringify({ user_id: 1, from_fecha: fromDate })
+			  });
+			  const j = await res.json();
+			  if(j.ok){ location.reload(); } else { alert('Error: ' + (j.error || 'desconocido')); }
+			});
+		  })();
+		  </script>
+		{% endblock %}
+
+
+
+    </div>
+  </div>
+</div>
+{% endblock %}
