@@ -1,0 +1,510 @@
+{% extends "tea/base.html" %}
+
+{% block title %}Personalizar {{ avatar.nombre }} - TEA Edition{% endblock %}
+
+{% block extra_css %}
+<style>
+    .personalizacion-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .avatar-preview {
+        text-align: center;
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .avatar-preview-imagen {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+        border: 4px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .avatar-preview-nombre {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2C3E50;
+        margin-bottom: 10px;
+    }
+    
+    .configuracion-section {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .configuracion-section h3 {
+        color: #E74C3C;
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #2C3E50;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #E74C3C;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    
+    .color-picker {
+        width: 60px;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .range-slider {
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: #e9ecef;
+        outline: none;
+        -webkit-appearance: none;
+    }
+    
+    .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #E74C3C;
+        cursor: pointer;
+    }
+    
+    .range-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #E74C3C;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .range-value {
+        display: inline-block;
+        margin-left: 10px;
+        font-weight: bold;
+        color: #E74C3C;
+        min-width: 40px;
+    }
+    
+    .frases-personalizadas {
+        margin-top: 20px;
+    }
+    
+    .frase-input {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    .frase-input input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+    }
+    
+    .btn-agregar-frase {
+        background: #27AE60;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    
+    .btn-agregar-frase:hover {
+        background: #229954;
+    }
+    
+    .btn-eliminar-frase {
+        background: #E74C3C;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+    
+    .btn-eliminar-frase:hover {
+        background: #C0392B;
+    }
+    
+    .frases-lista {
+        margin-top: 15px;
+    }
+    
+    .frase-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .btn-probar-voz {
+        background: #3498DB;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 10px;
+    }
+    
+    .btn-probar-voz:hover {
+        background: #2980B9;
+    }
+    
+    .btn-guardar {
+        background: linear-gradient(135deg, #E74C3C, #C0392B);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-guardar:hover {
+        background: linear-gradient(135deg, #C0392B, #A93226);
+        transform: translateY(-2px);
+    }
+    
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #E74C3C;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="personalizacion-container">
+    <h1 class="text-center mb-4">⚙️ Personalizar {{ avatar.nombre }}</h1>
+    
+    <div class="avatar-preview">
+        <div class="avatar-preview-imagen" id="avatar-preview" 
+             style="background-color: {{ avatar_usuario.color_preferido if avatar_usuario else avatar.get_personalidad().get('color_principal', '#E74C3C') }}20;">
+            {% if avatar.nombre == 'Spider-Man' %}
+                🕷️
+            {% elif avatar.nombre == 'Tony Stark' %}
+                🤖
+            {% elif avatar.nombre == 'Mario' %}
+                🍄
+            {% elif avatar.nombre == 'Princesa' %}
+                👑
+            {% elif avatar.nombre == 'Robot' %}
+                🤖
+            {% else %}
+                🎭
+            {% endif %}
+        </div>
+        <div class="avatar-preview-nombre">{{ avatar.nombre }}</div>
+        <p class="text-muted">Tu compañero de aventuras</p>
+    </div>
+    
+    <div class="configuracion-section">
+        <h3>🎨 Apariencia</h3>
+        
+        <div class="form-group">
+            <label for="color-preferido">Color Preferido:</label>
+            <input type="color" id="color-preferido" class="color-picker" 
+                   value="{{ avatar_usuario.color_preferido if avatar_usuario else avatar.get_personalidad().get('color_principal', '#E74C3C') }}">
+        </div>
+    </div>
+    
+    <div class="configuracion-section">
+        <h3>🎤 Configuración de Voz</h3>
+        
+        <div class="form-group">
+            <label for="velocidad-voz">Velocidad de Voz:</label>
+            <input type="range" id="velocidad-voz" class="range-slider" 
+                   min="0.1" max="2.0" step="0.1" 
+                   value="{{ avatar_usuario.velocidad_voz if avatar_usuario else 0.9 }}">
+            <span class="range-value" id="velocidad-value">{{ avatar_usuario.velocidad_voz if avatar_usuario else 0.9 }}</span>
+        </div>
+        
+        <div class="form-group">
+            <label for="tono-voz">Tono de Voz:</label>
+            <input type="range" id="tono-voz" class="range-slider" 
+                   min="0.0" max="2.0" step="0.1" 
+                   value="{{ avatar_usuario.tono_voz if avatar_usuario else 1.1 }}">
+            <span class="range-value" id="tono-value">{{ avatar_usuario.tono_voz if avatar_usuario else 1.1 }}</span>
+        </div>
+        
+        <div class="form-group">
+            <label for="volumen-voz">Volumen:</label>
+            <input type="range" id="volumen-voz" class="range-slider" 
+                   min="0.0" max="1.0" step="0.1" 
+                   value="{{ avatar_usuario.volumen_voz if avatar_usuario else 0.8 }}">
+            <span class="range-value" id="volumen-value">{{ avatar_usuario.volumen_voz if avatar_usuario else 0.8 }}</span>
+        </div>
+        
+        <button class="btn-probar-voz" onclick="probarVoz()">🎵 Probar Voz</button>
+    </div>
+    
+    <div class="configuracion-section">
+        <h3>💬 Frases Personalizadas</h3>
+        <p class="text-muted">Agrega frases especiales que tu avatar dirá para motivarte</p>
+        
+        <div class="frases-personalizadas">
+            <div class="frase-input">
+                <input type="text" id="nueva-frase" placeholder="Escribe una frase motivacional...">
+                <button class="btn-agregar-frase" onclick="agregarFrase()">➕ Agregar</button>
+            </div>
+            
+            <div class="frases-lista" id="frases-lista">
+                {% if avatar_usuario and avatar_usuario.get_frases_personalizadas() %}
+                    {% for tipo, frase in avatar_usuario.get_frases_personalizadas().items() %}
+                    <div class="frase-item">
+                        <span>{{ frase }}</span>
+                        <button class="btn-eliminar-frase" onclick="eliminarFrase('{{ tipo }}')">🗑️</button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Guardando configuración...</p>
+    </div>
+    
+    <button class="btn-guardar" onclick="guardarPersonalizacion()">
+        💾 Guardar Personalización
+    </button>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('tea.avatars.avatars_lista') }}" class="btn btn-outline-secondary">
+            ← Volver a Selección de Avatares
+        </a>
+    </div>
+</div>
+
+<script>
+// Variables globales
+let frasesPersonalizadas = {{ avatar_usuario.get_frases_personalizadas() | tojson if avatar_usuario else '{}' }};
+let contadorFrases = Object.keys(frasesPersonalizadas).length;
+
+// Actualizar valores de los sliders
+document.getElementById('velocidad-voz').addEventListener('input', function() {
+    document.getElementById('velocidad-value').textContent = this.value;
+});
+
+document.getElementById('tono-voz').addEventListener('input', function() {
+    document.getElementById('tono-value').textContent = this.value;
+});
+
+document.getElementById('volumen-voz').addEventListener('input', function() {
+    document.getElementById('volumen-value').textContent = this.value;
+});
+
+// Actualizar color del avatar preview
+document.getElementById('color-preferido').addEventListener('input', function() {
+    const preview = document.getElementById('avatar-preview');
+    preview.style.backgroundColor = this.value + '20';
+});
+
+// Probar voz
+function probarVoz() {
+    const texto = "¡Hola! Soy {{ avatar.nombre }}. ¿Cómo suena mi voz ahora?";
+    const velocidad = document.getElementById('velocidad-voz').value;
+    const tono = document.getElementById('tono-voz').value;
+    const volumen = document.getElementById('volumen-voz').value;
+    
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'es-ES';
+        utterance.rate = parseFloat(velocidad);
+        utterance.pitch = parseFloat(tono);
+        utterance.volume = parseFloat(volumen);
+        
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('Tu navegador no soporta síntesis de voz');
+    }
+}
+
+// Agregar frase personalizada
+function agregarFrase() {
+    const input = document.getElementById('nueva-frase');
+    const frase = input.value.trim();
+    
+    if (!frase) {
+        alert('Por favor, escribe una frase');
+        return;
+    }
+    
+    const tipo = `frase_${contadorFrases + 1}`;
+    frasesPersonalizadas[tipo] = frase;
+    contadorFrases++;
+    
+    // Agregar a la lista visual
+    const frasesLista = document.getElementById('frases-lista');
+    const fraseItem = document.createElement('div');
+    fraseItem.className = 'frase-item';
+    fraseItem.innerHTML = `
+        <span>${frase}</span>
+        <button class="btn-eliminar-frase" onclick="eliminarFrase('${tipo}')">🗑️</button>
+    `;
+    frasesLista.appendChild(fraseItem);
+    
+    // Limpiar input
+    input.value = '';
+}
+
+// Eliminar frase personalizada
+function eliminarFrase(tipo) {
+    delete frasesPersonalizadas[tipo];
+    
+    // Recargar la lista visual
+    actualizarListaFrases();
+}
+
+// Actualizar lista visual de frases
+function actualizarListaFrases() {
+    const frasesLista = document.getElementById('frases-lista');
+    frasesLista.innerHTML = '';
+    
+    for (const [tipo, frase] of Object.entries(frasesPersonalizadas)) {
+        const fraseItem = document.createElement('div');
+        fraseItem.className = 'frase-item';
+        fraseItem.innerHTML = `
+            <span>${frase}</span>
+            <button class="btn-eliminar-frase" onclick="eliminarFrase('${tipo}')">🗑️</button>
+        `;
+        frasesLista.appendChild(fraseItem);
+    }
+}
+
+// Guardar personalización
+function guardarPersonalizacion() {
+    const loading = document.getElementById('loading');
+    loading.style.display = 'block';
+    
+    const data = {
+        color_preferido: document.getElementById('color-preferido').value,
+        velocidad_voz: document.getElementById('velocidad-voz').value,
+        tono_voz: document.getElementById('tono-voz').value,
+        volumen_voz: document.getElementById('volumen-voz').value,
+        frases_personalizadas: frasesPersonalizadas
+    };
+    
+    fetch(`/tea/avatars/guardar-personalizacion/{{ avatar.id }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('¡Personalización guardada exitosamente!', 'success');
+        } else {
+            showNotification(data.message || 'Error al guardar', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error de conexión', 'error');
+    })
+    .finally(() => {
+        loading.style.display = 'none';
+    });
+}
+
+// Mostrar notificación
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.style.minWidth = '300px';
+    
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+
+// Permitir agregar frase con Enter
+document.getElementById('nueva-frase').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        agregarFrase();
+    }
+});
+</script>
+{% endblock %}

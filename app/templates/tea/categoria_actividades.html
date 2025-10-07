@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 {{ categoria.capitalize() }} - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navegación persistente */
+        .nav-persistente {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-top: 3px solid #FFD700;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #2C3E50;
+            padding: 10px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        
+        .nav-item:hover, .nav-item:focus {
+            background: #FFD700;
+            transform: translateY(-3px);
+            outline: 3px solid #FFA500;
+        }
+        
+        .nav-item.active {
+            background: #FFA500;
+            color: white;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Contenido principal */
+        .main-content {
+            padding-bottom: 100px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .back-button:hover, .back-button:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            outline: 3px solid #FFD700;
+        }
+        
+        .category-title {
+            font-size: 2.5rem;
+            color: #E74C3C;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .category-description {
+            font-size: 1.2rem;
+            color: #7F8C8D;
+            margin-bottom: 20px;
+        }
+        
+        /* Progreso de la categoría */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .progress-title {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .progress-bar-container {
+            background: #ECF0F1;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498DB, #2ECC71);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #27AE60;
+        }
+        
+        /* Lista de actividades */
+        .activities-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .activity-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .activity-card:hover, .activity-card:focus {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #FFD700;
+            outline: none;
+        }
+        
+        .activity-card.completed {
+            border-color: #27AE60;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.1));
+        }
+        
+        .activity-card.in-progress {
+            border-color: #F39C12;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(230, 126, 34, 0.1));
+        }
+        
+        .activity-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .activity-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .activity-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2C3E50;
+        }
+        
+        .activity-description {
+            font-size: 1rem;
+            color: #7F8C8D;
+            margin-bottom: 15px;
+        }
+        
+        .activity-status {
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .status-completed {
+            background: #27AE60;
+            color: white;
+        }
+        
+        .status-in-progress {
+            background: #F39C12;
+            color: white;
+        }
+        
+        .status-available {
+            background: #3498DB;
+            color: white;
+        }
+        
+        .status-locked {
+            background: #95A5A6;
+            color: white;
+        }
+        
+        .activity-points {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+            margin-top: 10px;
+        }
+        
+        /* Botón de acción */
+        .action-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .btn-start-activity {
+            background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-start-activity:hover, .btn-start-activity:focus {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(39, 174, 96, 0.4);
+            outline: 3px solid #FFD700;
+        }
+        
+        .btn-start-activity:disabled {
+            background: #95A5A6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .category-title {
+                font-size: 2rem;
+            }
+            
+            .activities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-persistente {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <a href="/tea/nino/" class="back-button" aria-label="Volver al dashboard">
+                    ← Volver
+                </a>
+                
+                <h1 class="category-title">
+                    {{ categoria_icono }} {{ categoria.capitalize() }}
+                </h1>
+                <p class="category-description">
+                    {{ categoria_descripcion }}
+                </p>
+            </div>
+
+            <!-- Progreso de la categoría -->
+            <div class="progress-section">
+                <h3 class="progress-title">Tu Progreso</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: {{ progreso_porcentaje }}%"></div>
+                </div>
+                <div class="progress-text" id="progressText">
+                    {{ actividades_completadas }} de {{ actividades_totales }} actividades completadas
+                </div>
+            </div>
+
+            <!-- Lista de actividades -->
+            <div class="activities-section">
+                <h2 class="section-title">🎯 Actividades Disponibles</h2>
+                <div class="activities-grid" id="activitiesGrid">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Botón de acción -->
+            <div class="action-section">
+                <button class="btn-start-activity" id="btnStartActivity" onclick="startRecommendedActivity()">
+                    🚀 Empezar Actividad Recomendada
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación persistente -->
+    <nav class="nav-persistente" role="navigation" aria-label="Navegación principal">
+        <a href="/tea/nino/" class="nav-item" aria-label="Inicio del niño">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Inicio</span>
+        </a>
+        <a href="/tea/actividades/" class="nav-item" aria-label="Actividades disponibles">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-text">Actividades</span>
+        </a>
+        <a href="/tea/actividades/mapa" class="nav-item" aria-label="Mapa de mundos">
+            <span class="nav-icon">🗺️</span>
+            <span class="nav-text">Mapa</span>
+        </a>
+        <a href="/tea/configuracion-voz/" class="nav-item" aria-label="Configuración de voz">
+            <span class="nav-icon">🎤</span>
+            <span class="nav-text">Voz</span>
+        </a>
+        <a href="/tea/padres/" class="nav-item" aria-label="Vista de padres">
+            <span class="nav-icon">👨‍👩‍👧</span>
+            <span class="nav-text">Padres</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='js/avatar_voice_system.js') }}"></script>
+    
+    <script>
+        // Variables globales
+        const categoria = '{{ categoria }}';
+        let actividades = [];
+        let actividadRecomendada = null;
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadActivities();
+            loadRecommendedActivity();
+            initializeAvatar();
+        });
+        
+        // Cargar actividades de la categoría
+        async function loadActivities() {
+            try {
+                const response = await fetch(`/tea/actividades/api/categoria/${categoria}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    actividades = data.actividades;
+                    renderActivities();
+                }
+            } catch (error) {
+                console.error('Error cargando actividades:', error);
+            }
+        }
+        
+        // Renderizar actividades
+        function renderActivities() {
+            const grid = document.getElementById('activitiesGrid');
+            grid.innerHTML = '';
+            
+            actividades.forEach((actividad, index) => {
+                const card = createActivityCard(actividad, index);
+                grid.appendChild(card);
+            });
+        }
+        
+        // Crear tarjeta de actividad
+        function createActivityCard(actividad, index) {
+            const card = document.createElement('div');
+            card.className = `activity-card ${actividad.estado}`;
+            card.tabIndex = 0;
+            card.role = 'button';
+            card.setAttribute('aria-label', `Actividad: ${actividad.titulo}`);
+            
+            // Determinar icono según el estado
+            let icono = actividad.icono || '🎯';
+            if (actividad.estado === 'completed') {
+                icono = '✅';
+            } else if (actividad.estado === 'in-progress') {
+                icono = '⏳';
+            } else if (actividad.estado === 'locked') {
+                icono = '🔒';
+            }
+            
+            // Determinar texto del estado
+            let estadoTexto = 'Disponible';
+            if (actividad.estado === 'completed') {
+                estadoTexto = 'Completada';
+            } else if (actividad.estado === 'in-progress') {
+                estadoTexto = 'En Progreso';
+            } else if (actividad.estado === 'locked') {
+                estadoTexto = 'Bloqueada';
+            }
+            
+            card.innerHTML = `
+                <span class="activity-icon">${icono}</span>
+                <h3 class="activity-title">${actividad.titulo}</h3>
+                <p class="activity-description">${actividad.descripcion}</p>
+                <div class="activity-status status-${actividad.estado.replace('-', '-')}">${estadoTexto}</div>
+                <div class="activity-points">${actividad.puntos_recompensa} puntos</div>
+            `;
+            
+            // Eventos
+            if (actividad.estado !== 'locked') {
+                card.onclick = () => startActivity(actividad.id);
+                card.onkeydown = (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        startActivity(actividad.id);
+                    }
+                };
+            }
+            
+            return card;
+        }
+        
+        // Iniciar actividad
+        function startActivity(actividadId) {
+            // Disparar evento para el avatar
+            document.dispatchEvent(new CustomEvent('activityStarted', {
+                detail: { actividadId: actividadId }
+            }));
+            
+            // Redirigir a la actividad
+            window.location.href = `/tea/actividades/${actividadId}`;
+        }
+        
+        // Cargar actividad recomendada
+        async function loadRecommendedActivity() {
+            try {
+                const response = await fetch('/tea/avatar/recomendacion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nino_id: 1,
+                        categoria: categoria
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.success && data.categoria === categoria) {
+                    actividadRecomendada = data;
+                    updateRecommendedButton();
+                }
+            } catch (error) {
+                console.error('Error cargando recomendación:', error);
+            }
+        }
+        
+        // Actualizar botón de actividad recomendada
+        function updateRecommendedButton() {
+            const button = document.getElementById('btnStartActivity');
+            if (actividadRecomendada) {
+                button.textContent = `🚀 ${actividadRecomendada.frase}`;
+                button.disabled = false;
+            } else {
+                button.textContent = '🚀 Empezar Actividad Recomendada';
+                button.disabled = false;
+            }
+        }
+        
+        // Iniciar actividad recomendada
+        function startRecommendedActivity() {
+            if (actividadRecomendada) {
+                // Buscar la primera actividad disponible
+                const actividadDisponible = actividades.find(a => a.estado === 'available' || a.estado === 'in-progress');
+                if (actividadDisponible) {
+                    startActivity(actividadDisponible.id);
+                } else {
+                    // Si no hay actividades disponibles, mostrar mensaje
+                    if (typeof speakAvatarText === 'function') {
+                        speakAvatarText('¡Ya has completado todas las actividades de esta categoría! ¡Excelente trabajo!', 'excited');
+                    }
+                }
+            }
+        }
+        
+        // Inicializar avatar
+        function initializeAvatar() {
+            // Mostrar mensaje del avatar para la categoría
+            setTimeout(() => {
+                const frases = {
+                    'lenguaje': '¡Vamos a practicar palabras! ¿Te gusta hablar?',
+                    'numeros': '¡Los números son muy divertidos! ¿Quieres contar conmigo?',
+                    'colores': '¡Los colores son hermosos! ¿Cuál es tu favorito?',
+                    'animales': '¡Los animales son nuestros amigos! ¿Quieres conocerlos?'
+                };
+                
+                const frase = frases[categoria] || '¡Vamos a aprender!';
+                if (typeof speakAvatarText === 'function') {
+                    speakAvatarText(frase, 'excited');
+                }
+            }, 1000);
+        }
+        
+        // Eventos del avatar
+        document.addEventListener('activityStarted', function(event) {
+            if (typeof speakAvatarText === 'function') {
+                speakAvatarText('¡Perfecto! Vamos a empezar esta actividad. ¡Tú puedes!', 'excited');
+            }
+        });
+    </script>
+</body>
+</html>

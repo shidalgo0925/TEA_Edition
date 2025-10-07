@@ -1,0 +1,332 @@
+{% extends "tea/base.html" %}
+
+{% block title %}Seleccionar Avatar - TEA Edition{% endblock %}
+
+{% block extra_css %}
+<style>
+    .avatar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .avatar-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid transparent;
+    }
+    
+    .avatar-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .avatar-card.seleccionado {
+        border-color: #E74C3C;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    }
+    
+    .avatar-imagen {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        border: 3px solid #e9ecef;
+    }
+    
+    .avatar-nombre {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2C3E50;
+        margin-bottom: 10px;
+    }
+    
+    .avatar-tipo {
+        color: #7F8C8D;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+    
+    .avatar-descripcion {
+        color: #5D6D7E;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    
+    .btn-seleccionar {
+        background: linear-gradient(135deg, #E74C3C, #C0392B);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-seleccionar:hover {
+        background: linear-gradient(135deg, #C0392B, #A93226);
+        transform: translateY(-2px);
+    }
+    
+    .btn-seleccionar:disabled {
+        background: #BDC3C7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .btn-personalizar {
+        background: linear-gradient(135deg, #3498DB, #2980B9);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        width: 100%;
+    }
+    
+    .btn-personalizar:hover {
+        background: linear-gradient(135deg, #2980B9, #1F618D);
+    }
+    
+    .avatar-actual {
+        background: linear-gradient(135deg, #E74C3C, #C0392B);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .avatar-actual h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.3rem;
+    }
+    
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #E74C3C;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">🎭 Selecciona tu Avatar</h1>
+            <p class="text-center text-muted mb-4">
+                Elige el personaje que te acompañará en todas tus aventuras de aprendizaje
+            </p>
+            
+            {% if avatar_actual %}
+            <div class="avatar-actual">
+                <h3>🎉 Tu Avatar Actual</h3>
+                <p><strong>{{ avatar_actual.avatar.nombre }}</strong> - {{ avatar_actual.avatar.tipo|title }}</p>
+                <small>¡Tu compañero de aventuras está listo para ayudarte!</small>
+            </div>
+            {% endif %}
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Procesando selección...</p>
+            </div>
+            
+            <div class="avatar-grid" id="avatar-grid">
+                {% for avatar in avatares %}
+                <div class="avatar-card {% if avatar_actual and avatar_actual.avatar_id == avatar.id %}seleccionado{% endif %}" 
+                     data-avatar-id="{{ avatar.id }}">
+                    <div class="avatar-imagen" style="background-color: {{ avatar.get_personalidad().get('color_principal', '#E74C3C') }}20;">
+                        {% if avatar.nombre == 'Spider-Man' %}
+                            🕷️
+                        {% elif avatar.nombre == 'Tony Stark' %}
+                            🤖
+                        {% elif avatar.nombre == 'Mario' %}
+                            🍄
+                        {% elif avatar.nombre == 'Princesa' %}
+                            👑
+                        {% elif avatar.nombre == 'Robot' %}
+                            🤖
+                        {% else %}
+                            🎭
+                        {% endif %}
+                    </div>
+                    
+                    <div class="avatar-nombre">{{ avatar.nombre }}</div>
+                    <div class="avatar-tipo">{{ avatar.tipo }}</div>
+                    
+                    <div class="avatar-descripcion">
+                        {% set personalidad = avatar.get_personalidad() %}
+                        {% if personalidad.personalidad == 'amigable' %}
+                            Un superhéroe amigable que te ayudará a aprender de forma divertida.
+                        {% elif personalidad.personalidad == 'inteligente' %}
+                            Un genio tecnológico que te enseñará a resolver problemas.
+                        {% elif personalidad.personalidad == 'alegre' %}
+                            Un aventurero alegre que hará que aprender sea muy divertido.
+                        {% elif personalidad.personalidad == 'dulce' %}
+                            Una princesa dulce que te guiará con amor y paciencia.
+                        {% elif personalidad.personalidad == 'logico' %}
+                            Un robot lógico que te ayudará a pensar paso a paso.
+                        {% endif %}
+                    </div>
+                    
+                    <button class="btn-seleccionar" 
+                            onclick="seleccionarAvatar({{ avatar.id }}, '{{ avatar.nombre }}')"
+                            {% if avatar_actual and avatar_actual.avatar_id == avatar.id %}disabled{% endif %}>
+                        {% if avatar_actual and avatar_actual.avatar_id == avatar.id %}
+                            ✅ Seleccionado
+                        {% else %}
+                            🎯 Seleccionar
+                        {% endif %}
+                    </button>
+                    
+                    <button class="btn-personalizar" 
+                            onclick="personalizarAvatar({{ avatar.id }})">
+                        ⚙️ Personalizar
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('tea.nino.dashboard') if session.user_type == 'nino' else url_for('tea.padres.dashboard') }}" 
+                   class="btn btn-outline-secondary">
+                    ← Volver al Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function seleccionarAvatar(avatarId, avatarNombre) {
+    const loading = document.getElementById('loading');
+    const avatarGrid = document.getElementById('avatar-grid');
+    
+    // Mostrar loading
+    loading.style.display = 'block';
+    avatarGrid.style.opacity = '0.5';
+    
+    // Enviar petición
+    fetch(`/tea/avatars/seleccionar/${avatarId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            showNotification(`¡Avatar ${avatarNombre} seleccionado exitosamente!`, 'success');
+            
+            // Recargar página después de un momento
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showNotification(data.message || 'Error al seleccionar avatar', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error de conexión', 'error');
+    })
+    .finally(() => {
+        // Ocultar loading
+        loading.style.display = 'none';
+        avatarGrid.style.opacity = '1';
+    });
+}
+
+function personalizarAvatar(avatarId) {
+    window.location.href = `/tea/avatars/personalizar/${avatarId}`;
+}
+
+function showNotification(message, type) {
+    // Crear notificación
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.style.minWidth = '300px';
+    
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remover después de 5 segundos
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+
+// Hacer que el avatar hable al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    {% if avatar_actual %}
+    // Obtener frase motivacional del avatar actual
+    fetch(`/tea/avatars/frase-motivacional/{{ avatar_actual.avatar_id }}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reproducir frase con voz
+            reproducirVoz(data.frase, '{{ avatar_actual.avatar.audio_voice }}');
+        }
+    })
+    .catch(error => console.error('Error al obtener frase:', error));
+    {% endif %}
+});
+
+function reproducirVoz(texto, tipoVoz) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'es-ES';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.1;
+        utterance.volume = 0.8;
+        
+        speechSynthesis.speak(utterance);
+    }
+}
+</script>
+{% endblock %}

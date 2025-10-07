@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}🧠 1% Mejor Cada Día - TEA Edition{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+        
+        .nav-brand:hover {
+            color: #C0392B;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: #2C3E50;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #E74C3C;
+        }
+        
+        .nav-link.primary {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .nav-link.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .nav-link.secondary {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .nav-link.secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .nav-link.danger {
+            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+        
+        .nav-link.danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 25px;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        
+        .user-role {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+            color: #E74C3C;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: #7F8C8D;
+            margin-bottom: 20px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .action-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .action-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2C3E50;
+        }
+        
+        .action-desc {
+            color: #7F8C8D;
+            font-size: 0.95rem;
+        }
+        
+        .logout-form {
+            display: inline;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/tea/" class="nav-brand">
+                🧠 1% Mejor Cada Día
+            </a>
+            
+            <ul class="nav-menu">
+                {% if session.user_id and session.user_type %}
+                    <!-- Usuario autenticado -->
+                    <li class="nav-item">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                {% if session.user_type == 'padre' %}
+                                    👨‍👩‍👧
+                                {% else %}
+                                    🧒
+                                {% endif %}
+                            </div>
+                            <div class="user-details">
+                                <div class="user-name">
+                                    {% if session.user_type == 'padre' %}
+                                        {{ session.get('user_name', 'Padre') }}
+                                    {% else %}
+                                        {{ session.get('user_name', 'Niño') }}
+                                    {% endif %}
+                                </div>
+                                <div class="user-role">
+                                    {% if session.user_type == 'padre' %}
+                                        Panel de Padres
+                                    {% else %}
+                                        Panel del Niño
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    
+                    {% if session.user_type == 'padre' %}
+                        <li class="nav-item">
+                            <a href="/tea/padres/" class="nav-link primary">📊 Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/tea/padres/configuracion" class="nav-link">⚙️ Configuración</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/tea/padres/reportes" class="nav-link">📈 Reportes</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="/tea/nino/" class="nav-link primary">🎮 Mi Panel</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/tea/actividades/" class="nav-link">🎯 Actividades</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="nav-item">
+                        <a href="/tea/voice-config/" class="nav-link secondary">🎤 Voz</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/tea/configuracion/" class="nav-link secondary">⚙️ Configuración</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <form class="logout-form" action="/tea/auth/logout" method="POST" id="logoutForm">
+                            <button type="submit" class="logout-btn" id="logoutBtn">🚪 Salir</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <!-- Usuario no autenticado -->
+                    <li class="nav-item">
+                        <a href="/tea/welcome" class="nav-link">🌟 Conocer la App</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/tea/auth/login" class="nav-link primary">🔐 Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/tea/auth/register" class="nav-link secondary">📝 Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/tea/voice-config/" class="nav-link">🎤 Configurar Voz</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        {% if session.user_id and session.user_type %}
+            <!-- Usuario autenticado - Mostrar contenido personalizado -->
+            <div class="welcome-message">
+                <h1 class="welcome-title">
+                    ¡Bienvenido de vuelta!
+                </h1>
+                <p class="welcome-subtitle">
+                    {% if session.user_type == 'padre' %}
+                        Continúa monitoreando el progreso de tu hijo
+                    {% else %}
+                        ¡Es hora de aprender y divertirse!
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="quick-actions">
+                {% if session.user_type == 'padre' %}
+                    <a href="/tea/padres/" class="action-card">
+                        <div class="action-icon">📊</div>
+                        <div class="action-title">Dashboard</div>
+                        <div class="action-desc">Ver el progreso y estadísticas</div>
+                    </a>
+                    <a href="/tea/padres/configuracion" class="action-card">
+                        <div class="action-icon">⚙️</div>
+                        <div class="action-title">Configuración</div>
+                        <div class="action-desc">Ajustar preferencias del niño</div>
+                    </a>
+                    <a href="/tea/padres/reportes" class="action-card">
+                        <div class="action-icon">📈</div>
+                        <div class="action-title">Reportes</div>
+                        <div class="action-desc">Ver reportes detallados</div>
+                    </a>
+                {% else %}
+                    <a href="/tea/nino/" class="action-card">
+                        <div class="action-icon">🎮</div>
+                        <div class="action-title">Mi Panel</div>
+                        <div class="action-desc">Ver mi progreso y logros</div>
+                    </a>
+                    <a href="/tea/actividades/" class="action-card">
+                        <div class="action-icon">🎯</div>
+                        <div class="action-title">Actividades</div>
+                        <div class="action-desc">Jugar y aprender</div>
+                    </a>
+                {% endif %}
+                <a href="/tea/voice-config/" class="action-card">
+                    <div class="action-icon">🎤</div>
+                    <div class="action-title">Configurar Voz</div>
+                    <div class="action-desc">Ajustar la voz del avatar</div>
+                </a>
+            </div>
+        {% else %}
+            <!-- Usuario no autenticado - Mostrar página de bienvenida -->
+            <div class="welcome-message">
+                <h1 class="welcome-title">🧠 1% Mejor Cada Día</h1>
+                <h2 style="color: #E74C3C; margin-bottom: 15px;">Edición TEA</h2>
+                <p style="font-size: 1.1rem; color: #7F8C8D; margin-bottom: 30px;">
+                    Una aplicación educativa e inclusiva diseñada especialmente para niños con autismo. 
+                    Aprende, juega y crece con actividades adaptadas y un avatar virtual que te guía en cada paso.
+                </p>
+            </div>
+            
+            <div class="quick-actions">
+                <a href="/tea/welcome" class="action-card">
+                    <div class="action-icon">🌟</div>
+                    <div class="action-title">Conocer la App</div>
+                    <div class="action-desc">Descubre todas las funcionalidades</div>
+                </a>
+                <a href="/tea/auth/login" class="action-card">
+                    <div class="action-icon">🔐</div>
+                    <div class="action-title">Iniciar Sesión</div>
+                    <div class="action-desc">Accede a tu cuenta</div>
+                </a>
+                <a href="/tea/auth/register" class="action-card">
+                    <div class="action-icon">📝</div>
+                    <div class="action-title">Registrarse</div>
+                    <div class="action-desc">Crea una nueva cuenta</div>
+                </a>
+                <a href="/tea/voice-config/" class="action-card">
+                    <div class="action-icon">🎤</div>
+                    <div class="action-title">Configurar Voz</div>
+                    <div class="action-desc">Ajustar la voz del avatar</div>
+                </a>
+            </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Manejar logout
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutForm = document.getElementById('logoutForm');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (logoutForm && logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Confirmar antes de salir
+                    if (confirm('¿Estás seguro de que quieres salir?')) {
+                        // Mostrar mensaje de carga
+                        logoutBtn.innerHTML = '⏳ Saliendo...';
+                        logoutBtn.disabled = true;
+                        
+                        // Enviar formulario
+                        logoutForm.submit();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from app.extensions import db, init_db
 from flask_migrate import Migrate
 
 # Inicializar extensiones
-db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = os.environ.get("SECRET_KEY", "tea-edition-secret-key-2025")
     
-    # Configuración de la base de datos
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tea_edition.db'
+    # Configuración de la base de datos desde config.py
+    import config
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = False
+    app.config['SQLALCHEMY_ECHO'] = config.SQLALCHEMY_ECHO
     
     # Inicializar extensiones con la app
-    db.init_app(app)
+    init_db(app)
     migrate.init_app(app, db)
     
     # Agregar filtro para JSON

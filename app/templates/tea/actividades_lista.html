@@ -282,55 +282,106 @@
             <a href="/tea/actividades/lenguaje" class="categoria-card">
                 <div class="categoria-icon">🗣️</div>
                 <div class="categoria-titulo">Lenguaje</div>
-                <div class="categoria-desc">Practica palabras y sonidos</div>
+                <div class="categoria-desc">Aprende a hablar y pronunciar palabras</div>
                 <button class="categoria-btn">¡Empezar!</button>
             </a>
             
             <a href="/tea/actividades/numeros" class="categoria-card">
                 <div class="categoria-icon">🔢</div>
                 <div class="categoria-titulo">Números</div>
-                <div class="categoria-desc">Aprende a contar</div>
+                <div class="categoria-desc">Cuenta números y haz sumas</div>
                 <button class="categoria-btn">¡Empezar!</button>
             </a>
             
             <a href="/tea/actividades/colores" class="categoria-card">
                 <div class="categoria-icon">🎨</div>
                 <div class="categoria-titulo">Colores</div>
-                <div class="categoria-desc">Reconoce los colores</div>
+                <div class="categoria-desc">Identifica y mezcla colores</div>
                 <button class="categoria-btn">¡Empezar!</button>
             </a>
             
             <a href="/tea/actividades/animales" class="categoria-card">
                 <div class="categoria-icon">🐶</div>
                 <div class="categoria-titulo">Animales</div>
-                <div class="categoria-desc">Conoce los animales</div>
+                <div class="categoria-desc">Aprende sobre animales y sus sonidos</div>
                 <button class="categoria-btn">¡Empezar!</button>
             </a>
         </div>
         
-        <!-- Actividades Disponibles -->
-        <div class="actividades-grid">
-            {% for actividad in actividades %}
-            <div class="actividad-card">
-                <div class="actividad-header">
-                    <div class="actividad-titulo">{{ actividad.titulo }}</div>
-                    <div class="actividad-puntos">⭐ {{ actividad.puntos_recompensa }}</div>
-                </div>
-                
-                <div class="actividad-desc">{{ actividad.descripcion }}</div>
-                
-                <div class="actividad-meta">
-                    <div class="actividad-tiempo">⏱️ {{ actividad.tiempo_estimado }} min</div>
-                    <div class="actividad-dificultad dificultad-{{ actividad.nivel_dificultad }}">
-                        {{ actividad.nivel_dificultad.title() }}
+        <!-- Actividades Recomendadas -->
+        <div style="background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <h2 style="text-align: center; color: #E74C3C; margin-bottom: 20px; font-size: 2rem;">
+                🌟 ¡Actividades Recomendadas para Ti!
+            </h2>
+            <p style="text-align: center; color: #7F8C8D; margin-bottom: 30px; font-size: 1.1rem;">
+                Estas actividades están perfectas para tu nivel actual
+            </p>
+            
+            <div class="actividades-grid">
+                {% for actividad in actividades %}
+                <div class="actividad-card" style="border: 3px solid #E74C3C; position: relative;">
+                    <div style="position: absolute; top: -10px; right: -10px; background: #E74C3C; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold;">
+                        RECOMENDADA
                     </div>
+                    <div class="actividad-header">
+                        <div class="actividad-titulo">{{ actividad.titulo }}</div>
+                        <div class="actividad-puntos">⭐ {{ actividad.puntos_recompensa }}</div>
+                    </div>
+                    
+                    <div class="actividad-desc">{{ actividad.descripcion or '¡Una actividad divertida para aprender y practicar!' }}</div>
+                    
+                    <div class="actividad-meta">
+                        <div class="actividad-tiempo">⏱️ {{ actividad.tiempo_estimado or 5 }} min</div>
+                        <div class="actividad-dificultad dificultad-{{ actividad.nivel_dificultad or 'basico' }}">
+                            {{ (actividad.nivel_dificultad or 'basico').title() }}
+                        </div>
+                    </div>
+                    
+                    <button class="btn-jugar" onclick="jugarActividad({{ actividad.id }})" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);">
+                        🎮 ¡Comenzar Ahora!
+                    </button>
                 </div>
-                
-                <button class="btn-jugar" onclick="jugarActividad({{ actividad.id }})">
-                    🎮 ¡Jugar!
-                </button>
+                {% endfor %}
             </div>
-            {% endfor %}
+        </div>
+        
+        <!-- Botón de Inicio Rápido -->
+        <div style="text-align: center; margin: 40px 0;">
+            <button onclick="inicioRapido()" style="background: linear-gradient(135deg, #27AE60 0%, #229954 100%); color: white; border: none; padding: 20px 40px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; cursor: pointer; box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3); transition: all 0.3s ease;">
+                🚀 ¡INICIO RÁPIDO!
+            </button>
+            <p style="color: #7F8C8D; margin-top: 15px; font-size: 1rem;">
+                Comienza con la primera actividad recomendada
+            </p>
+        </div>
+        
+        <!-- Sección de Ayuda -->
+        <div style="background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+            <h3 style="text-align: center; color: #2C3E50; margin-bottom: 20px; font-size: 1.5rem;">
+                💡 ¿Cómo funciona?
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🎯</div>
+                    <h4 style="color: #E74C3C; margin-bottom: 10px;">Actividades Recomendadas</h4>
+                    <p style="color: #7F8C8D; font-size: 0.9rem;">Son las actividades perfectas para tu nivel actual de aprendizaje</p>
+                </div>
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">⭐</div>
+                    <h4 style="color: #E74C3C; margin-bottom: 10px;">Puntos de Recompensa</h4>
+                    <p style="color: #7F8C8D; font-size: 0.9rem;">Gana puntos completando actividades y desbloquea nuevas recompensas</p>
+                </div>
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">⏱️</div>
+                    <h4 style="color: #E74C3C; margin-bottom: 10px;">Tiempo Estimado</h4>
+                    <p style="color: #7F8C8D; font-size: 0.9rem;">Tiempo aproximado que tomará completar cada actividad</p>
+                </div>
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🎮</div>
+                    <h4 style="color: #E74C3C; margin-bottom: 10px;">¡Comenzar Ahora!</h4>
+                    <p style="color: #7F8C8D; font-size: 0.9rem;">Haz clic para iniciar la actividad y comenzar a aprender</p>
+                </div>
+            </div>
         </div>
         
         <!-- Navegación -->
@@ -348,6 +399,35 @@
         function jugarActividad(actividadId) {
             window.location.href = `/tea/actividades/${actividadId}`;
         }
+        
+        function inicioRapido() {
+            // Obtener la primera actividad disponible
+            const primeraActividad = document.querySelector('.actividad-card');
+            if (primeraActividad) {
+                const boton = primeraActividad.querySelector('.btn-jugar');
+                if (boton) {
+                    boton.click();
+                }
+            } else {
+                // Si no hay actividades, ir a la primera categoría
+                window.location.href = '/tea/actividades/lenguaje';
+            }
+        }
+        
+        // Animación de entrada para las actividades
+        document.addEventListener('DOMContentLoaded', function() {
+            const actividades = document.querySelectorAll('.actividad-card');
+            actividades.forEach((actividad, index) => {
+                actividad.style.opacity = '0';
+                actividad.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    actividad.style.transition = 'all 0.5s ease';
+                    actividad.style.opacity = '1';
+                    actividad.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
     </script>
 </body>
 </html>

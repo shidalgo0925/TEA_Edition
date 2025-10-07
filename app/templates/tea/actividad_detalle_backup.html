@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ actividad.titulo }} - TEA Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 50%, #FFA500 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #2C3E50;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #E74C3C;
+        }
+        
+        .nav-link.primary {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .nav-link.secondary {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .actividad-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .actividad-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .actividad-titulo {
+            font-size: 2.5rem;
+            color: #E74C3C;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .actividad-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            background: #F8F9FA;
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid #E0E0E0;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+            margin-bottom: 5px;
+        }
+        
+        .meta-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        
+        .actividad-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .actividad-descripcion {
+            font-size: 1.2rem;
+            color: #2C3E50;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .actividad-preview {
+            background: #F8F9FA;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px dashed #E0E0E0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .preview-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .preview-text {
+            font-size: 1.1rem;
+            color: #7F8C8D;
+        }
+        
+        .actividad-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        }
+        
+        .dificultad-basico {
+            background: #D5F4E6;
+            color: #27AE60;
+        }
+        
+        .dificultad-intermedio {
+            background: #FEF5E7;
+            color: #F39C12;
+        }
+        
+        .dificultad-avanzado {
+            background: #FADBD8;
+            color: #E74C3C;
+        }
+        
+        .progress-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .progress-title {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E74C3C, #C0392B);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #7F8C8D;
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .actividad-meta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .actividad-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/tea/" class="nav-brand">
+                🧠 1% Mejor Cada Día
+            </a>
+            
+            <ul class="nav-menu">
+                <li><a href="/tea/nino/" class="nav-link primary">🎮 Mi Panel</a></li>
+                <li><a href="/tea/actividades/" class="nav-link">🎯 Actividades</a></li>
+                <li><a href="/tea/voice-config/" class="nav-link secondary">🎤 Voz</a></li>
+                <li><a href="/tea/configuracion/" class="nav-link secondary">⚙️ Configuración</a></li>
+                <li><a href="/tea/auth/logout" class="nav-link" style="background: linear-gradient(135deg, #E67E22 0%, #D35400 100%); color: white;">🚪 Salir</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="actividad-container">
+            <!-- Header de la Actividad -->
+            <div class="actividad-header">
+                <h1 class="actividad-titulo">{{ actividad.titulo }}</h1>
+                
+                <div class="actividad-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Categoría</div>
+                        <div class="meta-value">{{ actividad.categoria.title() }}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Dificultad</div>
+                        <div class="meta-value dificultad-{{ actividad.nivel_dificultad }}">
+                            {{ actividad.nivel_dificultad.title() }}
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Tiempo</div>
+                        <div class="meta-value">{{ actividad.tiempo_estimado or 5 }} min</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Puntos</div>
+                        <div class="meta-value">⭐ {{ actividad.puntos_recompensa }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenido de la Actividad -->
+            <div class="actividad-content">
+                <div class="actividad-descripcion">
+                    {{ actividad.descripcion or '¡Una actividad divertida para aprender y practicar!' }}
+                </div>
+                
+                <div class="actividad-preview">
+                    <div class="preview-icon">🎯</div>
+                    <div class="preview-text">
+                        Esta actividad te ayudará a practicar {{ actividad.categoria }} de manera divertida y educativa.
+                    </div>
+                </div>
+                
+                <div class="actividad-actions">
+                    <button class="btn btn-primary" onclick="iniciarActividad()">
+                        🚀 ¡Comenzar Actividad!
+                    </button>
+                    <button class="btn btn-secondary" onclick="verInstrucciones()">
+                        📖 Ver Instrucciones
+                    </button>
+                    <a href="/tea/actividades/" class="btn btn-success">
+                        ← Volver a Actividades
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sección de Progreso -->
+            <div class="progress-section">
+                <h3 class="progress-title">Tu Progreso en {{ actividad.categoria.title() }}</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">
+                    Cargando progreso...
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/actividades_interactivas.js') }}"></script>
+    <script>
+        let actividadId = {{ actividad.id }};
+        let tiempoInicio = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarProgreso();
+        });
+        
+        function cargarProgreso() {
+            setTimeout(() => {
+                const progreso = Math.random() * 100;
+                document.getElementById('progress-fill').style.width = progreso + '%';
+                document.getElementById('progress-text').textContent = 
+                    'Has completado ' + Math.round(progreso) + '% de las actividades de {{ actividad.categoria.title() }}';
+            }, 1000);
+        }
+        
+        function iniciarActividad() {
+            tiempoInicio = new Date();
+            
+            if (confirm('¿Estás listo para comenzar esta actividad?')) {
+                mostrarActividad();
+            }
+        }
+        
+        function mostrarActividad() {
+            const categoria = '{{ actividad.categoria }}';
+            inicializarActividad(actividadId, categoria);
+        }
+        
+        
+        function abrirActividadNumeros() {
+            const preguntas = [
+                { numero: 5, pregunta: '¿Cuántos dedos tienes en una mano?', opciones: [5, 3, 7], correcta: 5 },
+                { numero: 10, pregunta: '¿Cuántos dedos tienes en total?', opciones: [10, 8, 12], correcta: 10 },
+                { numero: 2, pregunta: '¿Cuántos ojos tienes?', opciones: [2, 1, 3], correcta: 2 }
+            ];
+            
+            const pregunta = preguntas[Math.floor(Math.random() * preguntas.length)];
+            
+            // Crear HTML completo como string
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Actividad de Números</title>
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            padding: 20px; 
+                            background: #f0f8ff; 
+                            margin: 0;
+                        }
+                        .actividad { 
+                            text-align: center; 
+                            margin-top: 50px; 
+                        }
+                        .numero { 
+                            font-size: 4rem; 
+                            color: #E74C3C; 
+                            margin: 20px 0; 
+                            font-weight: bold;
+                        }
+                        .opciones { 
+                            display: flex; 
+                            gap: 20px; 
+                            justify-content: center; 
+                            margin: 30px 0; 
+                            flex-wrap: wrap;
+                        }
+                        .opcion { 
+                            padding: 15px 30px; 
+                            background: #3498DB; 
+                            color: white; 
+                            border: none; 
+                            border-radius: 10px; 
+                            cursor: pointer; 
+                            font-size: 1.2rem;
+                            transition: background 0.3s;
+                        }
+                        .opcion:hover { 
+                            background: #2980B9; 
+                        }
+                        .pregunta {
+                            font-size: 1.3rem;
+                            margin: 20px 0;
+                            color: #2C3E50;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="actividad">
+                        <h1>🔢 Actividad de Números</h1>
+                        <div class="numero">${pregunta.numero}</div>
+                        <div class="pregunta">${pregunta.pregunta}</div>
+                        <div class="opciones">
+                            <button class="opcion" onclick="responder(${pregunta.opciones[0]})">${pregunta.opciones[0]}</button>
+                            <button class="opcion" onclick="responder(${pregunta.opciones[1]})">${pregunta.opciones[1]}</button>
+                            <button class="opcion" onclick="responder(${pregunta.opciones[2]})">${pregunta.opciones[2]}</button>
+                        </div>
+                    </div>
+                    <script>
+                        function responder(respuesta) {
+                            console.log("Respuesta recibida:", respuesta, "Tipo:", typeof respuesta);
+                            const numRespuesta = parseInt(respuesta);
+                            if (numRespuesta === ${pregunta.correcta}) {
+                                alert("¡Correcto! 🎉 ¡Muy bien!");
+                                window.close();
+                            } else {
+                                alert("Inténtalo de nuevo 😊 ¡Piensa bien!");
+                            }
+                        }
+                    </script>
+                </body>
+                </html>
+            `;
+            
+            // Abrir ventana y escribir contenido
+            const ventana = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            if (ventana) {
+                ventana.document.open();
+                ventana.document.write(htmlContent);
+                ventana.document.close();
+            } else {
+                alert('Por favor, permite ventanas emergentes para esta actividad');
+            }
+        }
+        
+        function abrirActividadColores() {
+            const preguntas = [
+                { color: 'red', pregunta: '¿De qué color es este cuadrado?', opciones: ['rojo', 'azul', 'verde'], correcta: 'rojo' },
+                { color: 'blue', pregunta: '¿De qué color es este cuadrado?', opciones: ['azul', 'rojo', 'verde'], correcta: 'azul' },
+                { color: 'green', pregunta: '¿De qué color es este cuadrado?', opciones: ['verde', 'rojo', 'azul'], correcta: 'verde' }
+            ];
+            
+            const pregunta = preguntas[Math.floor(Math.random() * preguntas.length)];
+            
+            // Crear HTML completo como string
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Actividad de Colores</title>
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            padding: 20px; 
+                            background: #f0f8ff; 
+                            margin: 0;
+                        }
+                        .actividad { 
+                            text-align: center; 
+                            margin-top: 50px; 
+                        }
+                        .color-box { 
+                            width: 200px; 
+                            height: 200px; 
+                            margin: 20px auto; 
+                            border-radius: 20px;
+                            border: 3px solid #2C3E50;
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                        }
+                        .opciones { 
+                            display: flex; 
+                            gap: 20px; 
+                            justify-content: center; 
+                            margin: 30px 0; 
+                            flex-wrap: wrap;
+                        }
+                        .opcion { 
+                            padding: 15px 30px; 
+                            background: #3498DB; 
+                            color: white; 
+                            border: none; 
+                            border-radius: 10px; 
+                            cursor: pointer; 
+                            font-size: 1.2rem;
+                            transition: background 0.3s;
+                        }
+                        .opcion:hover { 
+                            background: #2980B9; 
+                        }
+                        .pregunta {
+                            font-size: 1.3rem;
+                            margin: 20px 0;
+                            color: #2C3E50;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="actividad">
+                        <h1>🎨 Actividad de Colores</h1>
+                        <div class="color-box" style="background: ${pregunta.color};"></div>
+                        <div class="pregunta">${pregunta.pregunta}</div>
+                        <div class="opciones">
+                            <button class="opcion" onclick="responder('${pregunta.opciones[0]}')">${pregunta.opciones[0].toUpperCase()}</button>
+                            <button class="opcion" onclick="responder('${pregunta.opciones[1]}')">${pregunta.opciones[1].toUpperCase()}</button>
+                            <button class="opcion" onclick="responder('${pregunta.opciones[2]}')">${pregunta.opciones[2].toUpperCase()}</button>
+                        </div>
+                    </div>
+                    <script>
+                        function responder(respuesta) {
+                            console.log("Respuesta recibida:", respuesta);
+                            if (respuesta === '${pregunta.correcta}') {
+                                alert("¡Correcto! 🎉 ¡Muy bien!");
+                                window.close();
+                            } else {
+                                alert("Inténtalo de nuevo 😊 ¡Mira bien el color!");
+                            }
+                        }
+                    </script>
+                </body>
+                </html>
+            `;
+            
+            // Abrir ventana y escribir contenido
+            const ventana = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            if (ventana) {
+                ventana.document.open();
+                ventana.document.write(htmlContent);
+                ventana.document.close();
+            } else {
+                alert('Por favor, permite ventanas emergentes para esta actividad');
+            }
+        }
+        
+        function abrirActividadAnimales() {
+            const preguntas = [
+                { emoji: '🐕', pregunta: '¿Qué animal es este?', opciones: ['perro', 'gato', 'pájaro'], correcta: 'perro' },
+                { emoji: '🐱', pregunta: '¿Qué animal es este?', opciones: ['gato', 'perro', 'conejo'], correcta: 'gato' },
+                { emoji: '🐰', pregunta: '¿Qué animal es este?', opciones: ['conejo', 'ratón', 'gato'], correcta: 'conejo' }
+            ];
+            
+            const pregunta = preguntas[Math.floor(Math.random() * preguntas.length)];
+            
+            // Crear HTML completo como string
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Actividad de Animales</title>
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            padding: 20px; 
+                            background: #f0f8ff; 
+                            margin: 0;
+                        }
+                        .actividad { 
+                            text-align: center; 
+                            margin-top: 50px; 
+                        }
+                        .animal { 
+                            font-size: 4rem; 
+                            margin: 20px 0; 
+                            animation: bounce 2s infinite;
+                        }
+                        @keyframes bounce {
+                            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                            40% { transform: translateY(-10px); }
+                            60% { transform: translateY(-5px); }
+                        }
+                        .opciones { 
+                            display: flex; 
+                            gap: 20px; 
+                            justify-content: center; 
+                            margin: 30px 0; 
+                            flex-wrap: wrap;
+                        }
+                        .opcion { 
+                            padding: 15px 30px; 
+                            background: #3498DB; 
+                            color: white; 
+                            border: none; 
+                            border-radius: 10px; 
+                            cursor: pointer; 
+                            font-size: 1.2rem;
+                            transition: background 0.3s;
+                        }
+                        .opcion:hover { 
+                            background: #2980B9; 
+                        }
+                        .pregunta {
+                            font-size: 1.3rem;
+                            margin: 20px 0;
+                            color: #2C3E50;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="actividad">
+                        <h1>🐶 Actividad de Animales</h1>
+                        <div class="animal">${pregunta.emoji}</div>
+                        <div class="pregunta">${pregunta.pregunta}</div>
+                        <div class="opciones">
+                            <button class="opcion" onclick="responder('${pregunta.opciones[0]}')">${pregunta.opciones[0].toUpperCase()}</button>
+                            <button class="opcion" onclick="responder('${pregunta.opciones[1]}')">${pregunta.opciones[1].toUpperCase()}</button>
+                            <button class="opcion" onclick="responder('${pregunta.opciones[2]}')">${pregunta.opciones[2].toUpperCase()}</button>
+                        </div>
+                    </div>
+                    <script>
+                        function responder(respuesta) {
+                            console.log("Respuesta recibida:", respuesta);
+                            if (respuesta === '${pregunta.correcta}') {
+                                alert("¡Correcto! 🎉 ¡Muy bien!");
+                                window.close();
+                            } else {
+                                alert("Inténtalo de nuevo 😊 ¡Mira bien el animal!");
+                            }
+                        }
+                    </script>
+                </body>
+                </html>
+            `;
+            
+            // Abrir ventana y escribir contenido
+            const ventana = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            if (ventana) {
+                ventana.document.open();
+                ventana.document.write(htmlContent);
+                ventana.document.close();
+            } else {
+                alert('Por favor, permite ventanas emergentes para esta actividad');
+            }
+        }
+        
+        function abrirActividadGenerica() {
+            // Crear HTML completo como string
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Actividad de Aprendizaje</title>
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            padding: 20px; 
+                            background: #f0f8ff; 
+                            text-align: center; 
+                            margin: 0;
+                        }
+                        .actividad { 
+                            margin-top: 50px; 
+                        }
+                        .btn-completar {
+                            padding: 15px 30px; 
+                            background: #E74C3C; 
+                            color: white; 
+                            border: none; 
+                            border-radius: 10px; 
+                            cursor: pointer; 
+                            font-size: 1.2rem;
+                            transition: background 0.3s;
+                        }
+                        .btn-completar:hover {
+                            background: #C0392B;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="actividad">
+                        <h1>🎯 Actividad de Aprendizaje</h1>
+                        <p>¡Esta es una actividad divertida para aprender!</p>
+                        <button class="btn-completar" onclick="window.close()">
+                            Completar Actividad
+                        </button>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Abrir ventana y escribir contenido
+            const ventana = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            if (ventana) {
+                ventana.document.open();
+                ventana.document.write(htmlContent);
+                ventana.document.close();
+            } else {
+                alert('Por favor, permite ventanas emergentes para esta actividad');
+            }
+        }
+        
+        function verInstrucciones() {
+            alert('Instrucciones:\n\n1. Lee la pregunta o instrucción\n2. Selecciona la respuesta correcta\n3. ¡Diviértete aprendiendo!');
+        }
+    </script>
+</body>
+</html>

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, request, jsonify
 
-voice_config_bp = Blueprint('voice_config', __name__, url_prefix='/configuracion-voz')
+voice_config_bp = Blueprint('voice_config', __name__, url_prefix='/voice-config')
 
 @voice_config_bp.route('/')
 def voice_config_page():
-    """Página de configuración de voz del avatar"""
-    return render_template('tea/voice_config.html')
+    """Página de configuración de voz y accesibilidad"""
+    return render_template('tea/configuracion_accesibilidad.html')
 
 @voice_config_bp.route('/api/voices')
 def api_get_voices():

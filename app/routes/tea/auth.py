@@ -69,9 +69,9 @@ def login():
             
             # Redirigir según tipo de usuario
             if tipo_usuario == 'padre':
-                return redirect(url_for('tea.padres_dashboard'))
+                return redirect(url_for('tea.padres.dashboard'))
             else:
-                return redirect(url_for('tea.nino_dashboard'))
+                return redirect(url_for('tea.nino.dashboard'))
         else:
             flash('Credenciales incorrectas. Inténtalo de nuevo.', 'error')
     
@@ -181,7 +181,7 @@ def register_child():
             
             db.session.commit()
             flash(f'¡Perfil de {nombre} creado exitosamente!', 'success')
-            return redirect(url_for('tea.padres_dashboard'))
+            return redirect(url_for('tea.padres.dashboard'))
             
         except Exception as e:
             db.session.rollback()
@@ -189,21 +189,37 @@ def register_child():
     
     return render_template('tea/auth/register_child.html')
 
-@auth_bp.route('/logout')
-@login_required
+@auth_bp.route('/logout', methods=['GET', 'POST'])
 def logout():
     """Cerrar sesión"""
-    # Marcar sesión como inactiva
-    if 'sesion_id' in session:
-        sesion = SesionUsuario.query.get(session['sesion_id'])
-        if sesion:
-            sesion.fin_sesion = datetime.utcnow()
-            sesion.activa = False
-            db.session.commit()
-    
-    session.clear()
-    flash('Has cerrado sesión exitosamente.', 'info')
-    return redirect(url_for('tea.index'))
+    try:
+        # Marcar sesión como inactiva
+        if 'sesion_id' in session:
+            sesion = SesionUsuario.query.get(session['sesion_id'])
+            if sesion:
+                sesion.fin_sesion = datetime.utcnow()
+                sesion.activa = False
+                db.session.commit()
+        
+        session.clear()
+        
+        # Si es una petición AJAX, devolver JSON
+        if request.method == 'POST':
+            return jsonify({
+                'success': True,
+                'message': 'Sesión cerrada exitosamente',
+                'redirect': url_for('tea.index')
+            })
+        
+        # Si es GET, redirigir normalmente
+        flash('Has cerrado sesión exitosamente.', 'info')
+        return redirect(url_for('tea.index'))
+        
+    except Exception as e:
+        if request.method == 'POST':
+            return jsonify({'error': str(e)}), 500
+        flash('Error al cerrar sesión.', 'error')
+        return redirect(url_for('tea.index'))
 
 @auth_bp.route('/profile')
 @login_required

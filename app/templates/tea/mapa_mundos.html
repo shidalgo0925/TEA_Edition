@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ Mapa de Mundos - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navegación persistente */
+        .nav-persistente {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-top: 3px solid #FFD700;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #2C3E50;
+            padding: 10px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        
+        .nav-item:hover, .nav-item:focus {
+            background: #FFD700;
+            transform: translateY(-3px);
+            outline: 3px solid #FFA500;
+        }
+        
+        .nav-item.active {
+            background: #FFA500;
+            color: white;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-text {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Contenido principal */
+        .main-content {
+            padding-bottom: 100px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .back-button:hover, .back-button:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            outline: 3px solid #FFD700;
+        }
+        
+        .map-title {
+            font-size: 2.5rem;
+            color: #E74C3C;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .map-subtitle {
+            font-size: 1.2rem;
+            color: #7F8C8D;
+            margin-bottom: 20px;
+        }
+        
+        /* Mapa de mundos */
+        .world-map {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            min-height: 600px;
+            overflow: hidden;
+        }
+        
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        /* Zonas del mapa */
+        .world-zone {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 4px solid transparent;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .world-zone:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        
+        .world-zone.available {
+            border-color: #27AE60;
+            animation: pulse 2s infinite;
+        }
+        
+        .world-zone.completed {
+            border-color: #F39C12;
+            background: linear-gradient(135deg, #F39C12, #E67E22);
+        }
+        
+        .world-zone.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #95A5A6, #7F8C8D);
+        }
+        
+        .world-zone.current {
+            border-color: #E74C3C;
+            animation: glow 2s infinite;
+        }
+        
+        .zone-icon {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .zone-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .zone-level {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        /* Posicionamiento de zonas */
+        .zone-lenguaje {
+            top: 50px;
+            left: 50px;
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+        }
+        
+        .zone-numeros {
+            top: 50px;
+            right: 50px;
+            background: linear-gradient(135deg, #2ECC71, #27AE60);
+        }
+        
+        .zone-colores {
+            bottom: 50px;
+            left: 50px;
+            background: linear-gradient(135deg, #F39C12, #E67E22);
+        }
+        
+        .zone-animales {
+            bottom: 50px;
+            right: 50px;
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+        }
+        
+        .zone-centro {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #9B59B6, #8E44AD);
+            width: 150px;
+            height: 150px;
+        }
+        
+        /* Caminos entre zonas */
+        .path {
+            position: absolute;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 10px;
+            opacity: 0.7;
+        }
+        
+        .path-horizontal {
+            height: 8px;
+            width: 200px;
+        }
+        
+        .path-vertical {
+            width: 8px;
+            height: 200px;
+        }
+        
+        .path-diagonal {
+            width: 8px;
+            height: 200px;
+            transform: rotate(45deg);
+        }
+        
+        /* Información de zona */
+        .zone-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            max-width: 300px;
+            display: none;
+        }
+        
+        .zone-info.active {
+            display: block;
+        }
+        
+        .zone-info-title {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .zone-info-description {
+            font-size: 1rem;
+            color: #7F8C8D;
+            margin-bottom: 15px;
+        }
+        
+        .zone-info-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: #F8F9FA;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498DB;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7F8C8D;
+        }
+        
+        /* Botones de acción */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn-zone {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #27AE60, #2ECC71);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #95A5A6, #7F8C8D);
+            color: white;
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+        }
+        
+        .btn-zone:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-zone:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Progreso general */
+        .progress-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .progress-title {
+            font-size: 1.5rem;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .progress-bar-container {
+            background: #ECF0F1;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498DB, #2ECC71);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #27AE60;
+        }
+        
+        /* Animaciones */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(231, 76, 60, 0.8); }
+            100% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.5); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .map-title {
+                font-size: 2rem;
+            }
+            
+            .world-zone {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .zone-centro {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .zone-icon {
+                font-size: 1.8rem;
+            }
+            
+            .zone-name {
+                font-size: 0.7rem;
+            }
+            
+            .zone-level {
+                font-size: 0.6rem;
+            }
+            
+            .zone-info {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 20px;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <a href="/tea/nino/" class="back-button" aria-label="Volver al dashboard">
+                    ← Volver
+                </a>
+                
+                <h1 class="map-title">
+                    🗺️ Mapa de Mundos
+                </h1>
+                <p class="map-subtitle">
+                    Explora diferentes mundos y completa actividades para desbloquear nuevas zonas
+                </p>
+            </div>
+
+            <!-- Progreso general -->
+            <div class="progress-section">
+                <h3 class="progress-title">Progreso General</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="generalProgressBar" style="width: 45%"></div>
+                </div>
+                <div class="progress-text" id="generalProgressText">
+                    9 de 20 actividades completadas (45%)
+                </div>
+            </div>
+
+            <!-- Mapa de mundos -->
+            <div class="world-map">
+                <div class="map-container">
+                    <!-- Zona de Lenguaje -->
+                    <div class="world-zone zone-lenguaje available" 
+                         onclick="selectZone('lenguaje')" 
+                         onmouseover="showZoneInfo('lenguaje')"
+                         onmouseout="hideZoneInfo()">
+                        <div class="zone-icon">🗣️</div>
+                        <div class="zone-name">Bosque de Palabras</div>
+                        <div class="zone-level">Nivel 1</div>
+                    </div>
+                    
+                    <!-- Zona de Números -->
+                    <div class="world-zone zone-numeros available" 
+                         onclick="selectZone('numeros')" 
+                         onmouseover="showZoneInfo('numeros')"
+                         onmouseout="hideZoneInfo()">
+                        <div class="zone-icon">🔢</div>
+                        <div class="zone-name">Montaña de Números</div>
+                        <div class="zone-level">Nivel 1</div>
+                    </div>
+                    
+                    <!-- Zona de Colores -->
+                    <div class="world-zone zone-colores locked" 
+                         onclick="selectZone('colores')" 
+                         onmouseover="showZoneInfo('colores')"
+                         onmouseout="hideZoneInfo()">
+                        <div class="zone-icon">🎨</div>
+                        <div class="zone-name">Valle de Colores</div>
+                        <div class="zone-level">🔒</div>
+                    </div>
+                    
+                    <!-- Zona de Animales -->
+                    <div class="world-zone zone-animales locked" 
+                         onclick="selectZone('animales')" 
+                         onmouseover="showZoneInfo('animales')"
+                         onmouseout="hideZoneInfo()">
+                        <div class="zone-icon">🐶</div>
+                        <div class="zone-name">Selva de Animales</div>
+                        <div class="zone-level">🔒</div>
+                    </div>
+                    
+                    <!-- Zona Central -->
+                    <div class="world-zone zone-centro current" 
+                         onclick="selectZone('centro')" 
+                         onmouseover="showZoneInfo('centro')"
+                         onmouseout="hideZoneInfo()">
+                        <div class="zone-icon">🏰</div>
+                        <div class="zone-name">Castillo Central</div>
+                        <div class="zone-level">Base</div>
+                    </div>
+                    
+                    <!-- Caminos -->
+                    <div class="path path-horizontal" style="top: 110px; left: 170px;"></div>
+                    <div class="path path-horizontal" style="top: 110px; right: 170px;"></div>
+                    <div class="path path-vertical" style="top: 170px; left: 110px;"></div>
+                    <div class="path path-vertical" style="top: 170px; right: 110px;"></div>
+                </div>
+                
+                <!-- Información de zona -->
+                <div class="zone-info" id="zoneInfo">
+                    <h3 class="zone-info-title" id="zoneInfoTitle">Selecciona una zona</h3>
+                    <p class="zone-info-description" id="zoneInfoDescription">
+                        Haz clic en una zona para ver más información y acceder a las actividades.
+                    </p>
+                    <div class="zone-info-stats" id="zoneInfoStats">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <div class="action-buttons" id="zoneActionButtons">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación persistente -->
+    <nav class="nav-persistente" role="navigation" aria-label="Navegación principal">
+        <a href="/tea/nino/" class="nav-item" aria-label="Inicio del niño">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Inicio</span>
+        </a>
+        <a href="/tea/actividades/" class="nav-item" aria-label="Actividades disponibles">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-text">Actividades</span>
+        </a>
+        <a href="/tea/actividades/mapa" class="nav-item active" aria-label="Mapa de mundos">
+            <span class="nav-icon">🗺️</span>
+            <span class="nav-text">Mapa</span>
+        </a>
+        <a href="/tea/configuracion-voz/" class="nav-item" aria-label="Configuración de voz">
+            <span class="nav-icon">🎤</span>
+            <span class="nav-text">Voz</span>
+        </a>
+        <a href="/tea/padres/" class="nav-item" aria-label="Vista de padres">
+            <span class="nav-icon">👨‍👩‍👧</span>
+            <span class="nav-text">Padres</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='js/avatar_voice_system.js') }}"></script>
+    
+    <script>
+        // Variables globales
+        const zones = {
+            'lenguaje': {
+                name: 'Bosque de Palabras',
+                description: 'Aprende palabras, frases y conversaciones en este mágico bosque lleno de letras y sonidos.',
+                icon: '🗣️',
+                status: 'available',
+                level: 1,
+                activities: { completed: 9, total: 11 },
+                progress: 82,
+                requirements: 'Completar 8 actividades de lenguaje'
+            },
+            'numeros': {
+                name: 'Montaña de Números',
+                description: 'Escala esta montaña mientras aprendes a contar, sumar y resolver problemas matemáticos.',
+                icon: '🔢',
+                status: 'available',
+                level: 1,
+                activities: { completed: 5, total: 11 },
+                progress: 45,
+                requirements: 'Completar 5 actividades de números'
+            },
+            'colores': {
+                name: 'Valle de Colores',
+                description: 'Explora este valle lleno de colores vibrantes y aprende a reconocer y mezclar colores.',
+                icon: '🎨',
+                status: 'locked',
+                level: 2,
+                activities: { completed: 0, total: 3 },
+                progress: 0,
+                requirements: 'Completar 15 actividades en total'
+            },
+            'animales': {
+                name: 'Selva de Animales',
+                description: 'Adéntrate en la selva y conoce diferentes animales y sus sonidos únicos.',
+                icon: '🐶',
+                status: 'locked',
+                level: 2,
+                activities: { completed: 1, total: 3 },
+                progress: 33,
+                requirements: 'Completar 20 actividades en total'
+            },
+            'centro': {
+                name: 'Castillo Central',
+                description: 'Tu base de operaciones. Aquí puedes ver tu progreso general y acceder a todas las zonas.',
+                icon: '🏰',
+                status: 'current',
+                level: 0,
+                activities: { completed: 15, total: 28 },
+                progress: 54,
+                requirements: 'Zona central siempre disponible'
+            }
+        };
+        
+        let currentZone = null;
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadZoneData();
+            initializeAvatar();
+        });
+        
+        // Cargar datos de zonas
+        async function loadZoneData() {
+            try {
+                const response = await fetch('/tea/actividades/api/mapa-zonas');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateZones(data.zonas);
+                    updateGeneralProgress(data.progreso_general);
+                }
+            } catch (error) {
+                console.error('Error cargando datos de zonas:', error);
+            }
+        }
+        
+        // Actualizar zonas
+        function updateZones(zonasData) {
+            // Actualizar estado de las zonas basado en los datos
+            Object.keys(zones).forEach(zoneKey => {
+                const zone = zones[zoneKey];
+                const zoneElement = document.querySelector(`.zone-${zoneKey}`);
+                
+                if (zoneElement) {
+                    // Actualizar clase de estado
+                    zoneElement.className = `world-zone zone-${zoneKey} ${zone.status}`;
+                    
+                    // Actualizar progreso si está disponible
+                    if (zone.status === 'available' || zone.status === 'completed') {
+                        const progressElement = zoneElement.querySelector('.zone-level');
+                        if (progressElement) {
+                            progressElement.textContent = `${zone.activities.completed}/${zone.activities.total}`;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Actualizar progreso general
+        function updateGeneralProgress(progreso) {
+            const progressBar = document.getElementById('generalProgressBar');
+            const progressText = document.getElementById('generalProgressText');
+            
+            if (progressBar && progressText) {
+                progressBar.style.width = `${progreso.porcentaje}%`;
+                progressText.textContent = `${progreso.completadas} de ${progreso.totales} actividades completadas (${progreso.porcentaje}%)`;
+            }
+        }
+        
+        // Seleccionar zona
+        function selectZone(zoneKey) {
+            const zone = zones[zoneKey];
+            
+            if (zone.status === 'locked') {
+                if (typeof speakAvatarText === 'function') {
+                    speakAvatarText(`Esta zona está bloqueada. ${zone.requirements}`, 'normal');
+                }
+                return;
+            }
+            
+            currentZone = zoneKey;
+            showZoneInfo(zoneKey);
+            
+            // Disparar evento para el avatar
+            document.dispatchEvent(new CustomEvent('zoneSelected', {
+                detail: { zona: zoneKey, nombre: zone.name }
+            }));
+            
+            if (typeof speakAvatarText === 'function') {
+                speakAvatarText(`Has seleccionado ${zone.name}. ${zone.description}`, 'excited');
+            }
+        }
+        
+        // Mostrar información de zona
+        function showZoneInfo(zoneKey) {
+            const zone = zones[zoneKey];
+            const infoElement = document.getElementById('zoneInfo');
+            const titleElement = document.getElementById('zoneInfoTitle');
+            const descriptionElement = document.getElementById('zoneInfoDescription');
+            const statsElement = document.getElementById('zoneInfoStats');
+            const buttonsElement = document.getElementById('zoneActionButtons');
+            
+            if (!zone || !infoElement) return;
+            
+            // Mostrar información básica
+            titleElement.textContent = `${zone.icon} ${zone.name}`;
+            descriptionElement.textContent = zone.description;
+            
+            // Mostrar estadísticas
+            statsElement.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-number">${zone.activities.completed}</div>
+                    <div class="stat-label">Completadas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${zone.activities.total}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${zone.progress}%</div>
+                    <div class="stat-label">Progreso</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">${zone.level}</div>
+                    <div class="stat-label">Nivel</div>
+                </div>
+            `;
+            
+            // Mostrar botones de acción
+            let buttonsHTML = '';
+            
+            if (zone.status === 'available' || zone.status === 'current') {
+                buttonsHTML += `
+                    <button class="btn-zone btn-primary" onclick="enterZone('${zoneKey}')">
+                        🚀 Entrar
+                    </button>
+                `;
+            } else if (zone.status === 'locked') {
+                buttonsHTML += `
+                    <button class="btn-zone btn-secondary" disabled>
+                        🔒 Bloqueada
+                    </button>
+                `;
+            }
+            
+            if (zone.status === 'completed') {
+                buttonsHTML += `
+                    <button class="btn-zone btn-primary" onclick="replayZone('${zoneKey}')">
+                        🔄 Repetir
+                    </button>
+                `;
+            }
+            
+            buttonsElement.innerHTML = buttonsHTML;
+            
+            // Mostrar el panel de información
+            infoElement.classList.add('active');
+        }
+        
+        // Ocultar información de zona
+        function hideZoneInfo() {
+            // No ocultar automáticamente para mantener la información visible
+        }
+        
+        // Entrar a una zona
+        function enterZone(zoneKey) {
+            const zone = zones[zoneKey];
+            
+            if (typeof speakAvatarText === 'function') {
+                speakAvatarText(`¡Perfecto! Vamos a explorar ${zone.name}. ¡Prepárate para la aventura!`, 'excited');
+            }
+            
+            // Redirigir a las actividades de la zona
+            setTimeout(() => {
+                window.location.href = `/tea/actividades/categoria/${zoneKey}`;
+            }, 1000);
+        }
+        
+        // Repetir zona
+        function replayZone(zoneKey) {
+            const zone = zones[zoneKey];
+            
+            if (typeof speakAvatarText === 'function') {
+                speakAvatarText(`¡Excelente! Vamos a repetir ${zone.name} para mejorar aún más.`, 'excited');
+            }
+            
+            // Redirigir a las actividades de la zona
+            setTimeout(() => {
+                window.location.href = `/tea/actividades/categoria/${zoneKey}`;
+            }, 1000);
+        }
+        
+        // Inicializar avatar
+        function initializeAvatar() {
+            setTimeout(() => {
+                if (typeof speakAvatarText === 'function') {
+                    speakAvatarText('¡Bienvenido al mapa de mundos! Aquí puedes explorar diferentes zonas y completar actividades para desbloquear nuevas áreas.', 'excited');
+                }
+            }, 1000);
+        }
+        
+        // Eventos del avatar
+        document.addEventListener('zoneSelected', function(event) {
+            const zona = event.detail.zona;
+            const nombre = event.detail.nombre;
+            
+            if (typeof speakAvatarText === 'function') {
+                speakAvatarText(`Has seleccionado ${nombre}. ¿Quieres explorar esta zona?`, 'excited');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+

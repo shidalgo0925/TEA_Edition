@@ -373,24 +373,16 @@
         </div>
     </main>
     
+    <!-- JavaScript externo para actividades interactivas -->
+    <script src="{{ url_for('static', filename='js/actividades_interactivas.js') }}"></script>
+    
     <!-- JavaScript específico de la página -->
     <script>
         let actividadId = {{ actividad.id }};
         let tiempoInicio = null;
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📄 Página cargada, verificando archivo JavaScript...');
             cargarProgreso();
-            
-            // Verificar si el archivo JavaScript se cargó correctamente
-            setTimeout(() => {
-                if (typeof inicializarActividad === 'function') {
-                    console.log('✅ Archivo JavaScript cargado correctamente');
-                } else {
-                    console.error('❌ ERROR: Archivo JavaScript no se cargó correctamente');
-                    alert('Error: No se pudo cargar el archivo de actividades. Por favor, recarga la página.');
-                }
-            }, 1000);
         });
         
         function cargarProgreso() {
@@ -403,160 +395,21 @@
         }
         
         function iniciarActividad() {
-            console.log('🎯 Botón "Comenzar Actividad" presionado');
             tiempoInicio = new Date();
             
             if (confirm('¿Estás listo para comenzar esta actividad?')) {
-                console.log('✅ Usuario confirmó, llamando a mostrarActividad()');
                 mostrarActividad();
-            } else {
-                console.log('❌ Usuario canceló la actividad');
             }
         }
         
         function mostrarActividad() {
             const categoria = '{{ actividad.categoria }}';
-            console.log('🎮 Función mostrarActividad llamada con categoría:', categoria);
-            console.log('🆔 ID de actividad:', actividadId);
-            
-            // Verificar si la función inicializarActividad existe
-            if (typeof inicializarActividad === 'function') {
-                console.log('✅ Función inicializarActividad encontrada, llamándola...');
-                inicializarActividad(actividadId, categoria);
-            } else {
-                console.error('❌ ERROR: Función inicializarActividad no encontrada, usando función de respaldo...');
-                // Función de respaldo
-                abrirActividadRespaldo(categoria);
-            }
-        }
-        
-        // Función de respaldo en caso de que el archivo externo no se cargue
-        function abrirActividadRespaldo(categoria) {
-            console.log('🔄 Usando función de respaldo para categoría:', categoria);
-            
-            let htmlContent = '';
-            
-            if (categoria === 'numeros') {
-                htmlContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Actividad de Números</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; padding: 20px; background: #f0f8ff; margin: 0; }
-                            .actividad { text-align: center; margin-top: 50px; }
-                            .numero { font-size: 4rem; color: #E74C3C; margin: 20px 0; font-weight: bold; }
-                            .opciones { display: flex; gap: 20px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
-                            .opcion { padding: 15px 30px; background: #3498DB; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.2rem; }
-                            .opcion:hover { background: #2980B9; }
-                            .pregunta { font-size: 1.3rem; margin: 20px 0; color: #2C3E50; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="actividad">
-                            <h1>🔢 Actividad de Números</h1>
-                            <div class="numero">5</div>
-                            <div class="pregunta">¿Cuántos dedos tienes en una mano?</div>
-                            <div class="opciones">
-                                <button class="opcion" onclick="responder(5)">5</button>
-                                <button class="opcion" onclick="responder(3)">3</button>
-                                <button class="opcion" onclick="responder(7)">7</button>
-                            </div>
-                        </div>
-                        <script>
-                            function responder(respuesta) {
-                                if (respuesta === 5) {
-                                    alert("¡Correcto! 🎉 ¡Muy bien!");
-                                    window.close();
-                                } else {
-                                    alert("Inténtalo de nuevo 😊 ¡Piensa bien!");
-                                }
-                            }
-                        </script>
-                    </body>
-                    </html>
-                `;
-            } else if (categoria === 'lenguaje') {
-                htmlContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Actividad de Lenguaje</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; padding: 20px; background: #f0f8ff; margin: 0; }
-                            .actividad { text-align: center; margin-top: 50px; }
-                            .palabra { font-size: 3rem; color: #E74C3C; margin: 20px 0; font-weight: bold; }
-                            .opciones { display: flex; gap: 20px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
-                            .opcion { padding: 15px 30px; background: #3498DB; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.2rem; }
-                            .opcion:hover { background: #2980B9; }
-                            .pregunta { font-size: 1.3rem; margin: 20px 0; color: #2C3E50; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="actividad">
-                            <h1>🗣️ Actividad de Lenguaje</h1>
-                            <div class="palabra">GATO</div>
-                            <div class="pregunta">¿Cuál es el sonido que hace este animal?</div>
-                            <div class="opciones">
-                                <button class="opcion" onclick="responder('miau')">MIAU</button>
-                                <button class="opcion" onclick="responder('guau')">GUAU</button>
-                                <button class="opcion" onclick="responder('muu')">MUU</button>
-                            </div>
-                        </div>
-                        <script>
-                            function responder(respuesta) {
-                                if (respuesta === 'miau') {
-                                    alert("¡Correcto! 🎉 ¡Muy bien!");
-                                    window.close();
-                                } else {
-                                    alert("Inténtalo de nuevo 😊 ¡Piensa bien!");
-                                }
-                            }
-                        </script>
-                    </body>
-                    </html>
-                `;
-            } else {
-                htmlContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Actividad de ${categoria}</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; padding: 20px; background: #f0f8ff; margin: 0; }
-                            .actividad { text-align: center; margin-top: 50px; }
-                            .mensaje { font-size: 1.5rem; color: #2C3E50; margin: 20px 0; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="actividad">
-                            <h1>🎯 Actividad de ${categoria}</h1>
-                            <div class="mensaje">¡Próximamente más actividades divertidas!</div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-            }
-            
-            // Abrir ventana y escribir contenido
-            const ventana = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-            if (ventana) {
-                ventana.document.open();
-                ventana.document.write(htmlContent);
-                ventana.document.close();
-                console.log('✅ Ventana de actividad de respaldo abierta correctamente');
-            } else {
-                alert('Por favor, permite ventanas emergentes para esta actividad');
-                console.log('❌ No se pudo abrir ventana emergente');
-            }
+            inicializarActividad(actividadId, categoria);
         }
         
         function verInstrucciones() {
             alert('Instrucciones:\n\n1. Lee la pregunta o instrucción\n2. Selecciona la respuesta correcta\n3. ¡Diviértete aprendiendo!');
         }
     </script>
-    
-    <!-- JavaScript externo para actividades interactivas - Cargado al final -->
-    <script src="{{ url_for('static', filename='js/actividades_interactivas.js') }}"></script>
 </body>
 </html>

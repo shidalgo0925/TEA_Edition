@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Reportes - TEA Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+        
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .report-card h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1976D2;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            text-align: center;
+            color: #1976D2;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .export-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .export-section h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-export {
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+        }
+        
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-buttons {
+                justify-content: center;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Reportes Detallados</h1>
+        <p>Progreso completo de {{ nino.nombre }}</p>
+    </div>
+    
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="{{ url_for('tea.padres.dashboard') }}" class="btn">🏠 Dashboard</a>
+            <a href="{{ url_for('tea.padres.configuracion') }}" class="btn btn-secondary">⚙️ Configuración</a>
+            <a href="{{ url_for('tea.index') }}" class="btn btn-secondary">🏠 Inicio</a>
+        </div>
+        
+        {% if sesiones_totales %}
+        <div class="report-grid">
+            <div class="report-card">
+                <h3>📈 Resumen General</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Total de Sesiones:</span>
+                    <span class="stat-value">{{ sesiones_totales|length }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Tiempo Total:</span>
+                    <span class="stat-value">{{ sesiones_totales|sum(attribute='duracion_minutos') }} min</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Actividades Completadas:</span>
+                    <span class="stat-value">{{ sesiones_totales|sum(attribute='actividades_completadas') }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Puntos Totales:</span>
+                    <span class="stat-value">{{ sesiones_totales|sum(attribute='puntos_ganados') }}</span>
+                </div>
+            </div>
+            
+            <div class="report-card">
+                <h3>🎯 Progreso por Habilidades</h3>
+                {% for progreso in progreso_total %}
+                <div class="stat-item">
+                    <span class="stat-label">{{ progreso.habilidad|title }}:</span>
+                    <span class="stat-value">{{ progreso.puntos_totales }} pts</span>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="report-card">
+                <h3>📅 Actividad Reciente</h3>
+                {% if sesiones_totales %}
+                {% set ultima_sesion = sesiones_totales[-1] %}
+                <div class="stat-item">
+                    <span class="stat-label">Última Sesión:</span>
+                    <span class="stat-value">{{ ultima_sesion.fecha.strftime('%d/%m/%Y') }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Duración:</span>
+                    <span class="stat-value">{{ ultima_sesion.duracion_minutos }} min</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Actividades:</span>
+                    <span class="stat-value">{{ ultima_sesion.actividades_completadas }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h3 class="chart-title">📊 Progreso Semanal</h3>
+            <canvas id="progresoChart" width="400" height="200"></canvas>
+        </div>
+        
+        <div class="export-section">
+            <h3>📤 Exportar Reportes</h3>
+            <p>Descarga reportes detallados en diferentes formatos</p>
+            <div class="export-buttons">
+                <a href="{{ url_for('tea.padres.api_exportar_reporte') }}" class="btn-export">📄 JSON</a>
+                <button onclick="exportToPDF()" class="btn-export">📋 PDF</button>
+                <button onclick="exportToCSV()" class="btn-export">📊 CSV</button>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="no-data">
+            <h3>📊 No hay datos disponibles</h3>
+            <p>El niño aún no ha completado sesiones de actividades.</p>
+            <p>¡Anímalo a comenzar sus primeras actividades!</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        // Gráfico de progreso semanal
+        const ctx = document.getElementById('progresoChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                    datasets: [{
+                        label: 'Puntos Ganados',
+                        data: [12, 19, 3, 5, 2, 3, 8],
+                        borderColor: '#1976D2',
+                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Actividades Completadas',
+                        data: [2, 3, 1, 1, 1, 1, 2],
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Progreso de la Semana'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Funciones de exportación
+        function exportToPDF() {
+            alert('Función de exportación a PDF en desarrollo');
+        }
+        
+        function exportToCSV() {
+            alert('Función de exportación a CSV en desarrollo');
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

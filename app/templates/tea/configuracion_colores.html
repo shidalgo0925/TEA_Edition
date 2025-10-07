@@ -1,0 +1,639 @@
+{% extends "tea/base.html" %}
+
+{% block title %}🎨 Configuración de Colores - TEA Edition{% endblock %}
+
+{% block extra_css %}
+<style>
+    .config-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .config-header {
+        text-align: center;
+        margin-bottom: 40px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .config-title {
+        font-size: 2.5rem;
+        color: #E74C3C;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .config-subtitle {
+        font-size: 1.2rem;
+        color: #7F8C8D;
+        margin-bottom: 20px;
+    }
+    
+    .config-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+    
+    .color-picker-section {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .color-picker-section h3 {
+        color: #2C3E50;
+        margin-bottom: 25px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
+    .color-group {
+        margin-bottom: 25px;
+    }
+    
+    .color-label {
+        display: block;
+        font-weight: bold;
+        color: #2C3E50;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .color-input-group {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .color-picker {
+        width: 60px;
+        height: 60px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .color-picker:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    .color-hex {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #E0E0E0;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: 'Courier New', monospace;
+        text-align: center;
+        background: #F8F9FA;
+        transition: all 0.3s ease;
+    }
+    
+    .color-hex:focus {
+        outline: none;
+        border-color: #E74C3C;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    
+    .preview-section {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .preview-section h3 {
+        color: #2C3E50;
+        margin-bottom: 25px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
+    .preview-container {
+        border: 2px solid #E0E0E0;
+        border-radius: 15px;
+        overflow: hidden;
+        background: var(--preview-bg, #FFE5B4);
+        transition: all 0.3s ease;
+    }
+    
+    .preview-header {
+        background: var(--preview-primary, #E74C3C);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .preview-content {
+        padding: 20px;
+        background: var(--preview-bg, #FFE5B4);
+        color: var(--preview-text, #2C3E50);
+    }
+    
+    .preview-button {
+        background: var(--preview-secondary, #3498DB);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        margin: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .preview-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .preview-accent {
+        background: var(--preview-accent, #FFD700);
+        color: #2C3E50;
+        padding: 8px 16px;
+        border-radius: 15px;
+        font-weight: bold;
+        display: inline-block;
+        margin: 5px;
+    }
+    
+    .preset-colors {
+        margin-top: 30px;
+    }
+    
+    .preset-colors h4 {
+        color: #2C3E50;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    
+    .preset-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+    
+    .preset-item {
+        text-align: center;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .preset-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border-color: #E74C3C;
+    }
+    
+    .preset-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .preset-name {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #2C3E50;
+    }
+    
+    .actions {
+        text-align: center;
+        margin-top: 40px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 15px 30px;
+        margin: 10px;
+        border: none;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: white;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .config-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .config-title {
+            font-size: 2rem;
+        }
+        
+        .color-input-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .color-picker {
+            align-self: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="config-container">
+    <div class="config-header">
+        <h1 class="config-title">🎨 Configuración de Colores</h1>
+        <p class="config-subtitle">
+            Personaliza los colores de la interfaz para crear un ambiente cómodo y atractivo
+        </p>
+    </div>
+    
+    <div class="config-content">
+        <div class="color-picker-section">
+            <h3>🎨 Selector de Colores</h3>
+            
+            <div class="color-group">
+                <label class="color-label">Color Primario</label>
+                <div class="color-input-group">
+                    <input type="color" class="color-picker" id="color-primario" value="#E74C3C">
+                    <input type="text" class="color-hex" id="hex-primario" value="#E74C3C" maxlength="7">
+                </div>
+            </div>
+            
+            <div class="color-group">
+                <label class="color-label">Color Secundario</label>
+                <div class="color-input-group">
+                    <input type="color" class="color-picker" id="color-secundario" value="#3498DB">
+                    <input type="text" class="color-hex" id="hex-secundario" value="#3498DB" maxlength="7">
+                </div>
+            </div>
+            
+            <div class="color-group">
+                <label class="color-label">Color de Fondo</label>
+                <div class="color-input-group">
+                    <input type="color" class="color-picker" id="color-fondo" value="#FFE5B4">
+                    <input type="text" class="color-hex" id="hex-fondo" value="#FFE5B4" maxlength="7">
+                </div>
+            </div>
+            
+            <div class="color-group">
+                <label class="color-label">Color de Texto</label>
+                <div class="color-input-group">
+                    <input type="color" class="color-picker" id="color-texto" value="#2C3E50">
+                    <input type="text" class="color-hex" id="hex-texto" value="#2C3E50" maxlength="7">
+                </div>
+            </div>
+            
+            <div class="color-group">
+                <label class="color-label">Color de Acento</label>
+                <div class="color-input-group">
+                    <input type="color" class="color-picker" id="color-acento" value="#FFD700">
+                    <input type="text" class="color-hex" id="hex-acento" value="#FFD700" maxlength="7">
+                </div>
+            </div>
+            
+            <div class="preset-colors">
+                <h4>🎨 Paletas Predefinidas</h4>
+                <div class="preset-grid">
+                    <div class="preset-item" onclick="aplicarPreset('clasico')">
+                        <div class="preset-preview" style="background: linear-gradient(45deg, #E74C3C, #3498DB);"></div>
+                        <div class="preset-name">Clásico</div>
+                    </div>
+                    <div class="preset-item" onclick="aplicarPreset('naturaleza')">
+                        <div class="preset-preview" style="background: linear-gradient(45deg, #27AE60, #2ECC71);"></div>
+                        <div class="preset-name">Naturaleza</div>
+                    </div>
+                    <div class="preset-item" onclick="aplicarPreset('oceano')">
+                        <div class="preset-preview" style="background: linear-gradient(45deg, #3498DB, #5DADE2);"></div>
+                        <div class="preset-name">Océano</div>
+                    </div>
+                    <div class="preset-item" onclick="aplicarPreset('atardecer')">
+                        <div class="preset-preview" style="background: linear-gradient(45deg, #E67E22, #F39C12);"></div>
+                        <div class="preset-name">Atardecer</div>
+                    </div>
+                    <div class="preset-item" onclick="aplicarPreset('lavanda')">
+                        <div class="preset-preview" style="background: linear-gradient(45deg, #9B59B6, #BB8FCE);"></div>
+                        <div class="preset-name">Lavanda</div>
+                    </div>
+                    <div class="preset-item" onclick="aplicarPreset('neutro')">
+                        <div class="preset-preview" style="background: linear-gradient(45deg, #95A5A6, #BDC3C7);"></div>
+                        <div class="preset-name">Neutro</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview-section">
+            <h3>👁️ Vista Previa</h3>
+            <div class="preview-container">
+                <div class="preview-header">
+                    🧠 1% Mejor Cada Día
+                </div>
+                <div class="preview-content">
+                    <h4>¡Bienvenido a TEA Edition!</h4>
+                    <p>Esta es una vista previa de cómo se verá la interfaz con los colores seleccionados.</p>
+                    <button class="preview-button">Botón Principal</button>
+                    <button class="preview-button" style="background: var(--preview-accent, #FFD700); color: #2C3E50;">Botón Secundario</button>
+                    <div style="margin-top: 15px;">
+                        <span class="preview-accent">Etiqueta de Acento</span>
+                        <span class="preview-accent">Otra Etiqueta</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <button class="btn btn-primary" onclick="guardarColores()">
+            💾 Guardar Colores
+        </button>
+        <button class="btn btn-secondary" onclick="aplicarColores()">
+            ✅ Aplicar Cambios
+        </button>
+        <button class="btn btn-success" onclick="resetearColores()">
+            🔄 Resetear
+        </button>
+        <a href="/tea/configuracion/" class="btn btn-secondary">
+            ← Volver a Configuración
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Configuraciones de colores predefinidas
+    const presets = {
+        'clasico': {
+            primario: '#E74C3C',
+            secundario: '#3498DB',
+            fondo: '#FFE5B4',
+            texto: '#2C3E50',
+            acento: '#FFD700'
+        },
+        'naturaleza': {
+            primario: '#27AE60',
+            secundario: '#2ECC71',
+            fondo: '#E8F8F5',
+            texto: '#1B4F3C',
+            acento: '#F4D03F'
+        },
+        'oceano': {
+            primario: '#3498DB',
+            secundario: '#5DADE2',
+            fondo: '#EBF3FD',
+            texto: '#1B4F72',
+            acento: '#85C1E9'
+        },
+        'atardecer': {
+            primario: '#E67E22',
+            secundario: '#F39C12',
+            fondo: '#FEF9E7',
+            texto: '#7D3C98',
+            acento: '#F7DC6F'
+        },
+        'lavanda': {
+            primario: '#9B59B6',
+            secundario: '#BB8FCE',
+            fondo: '#F4ECF7',
+            texto: '#4A235A',
+            acento: '#D7BDE2'
+        },
+        'neutro': {
+            primario: '#95A5A6',
+            secundario: '#BDC3C7',
+            fondo: '#F8F9FA',
+            texto: '#2C3E50',
+            acento: '#D5DBDB'
+        }
+    };
+    
+    // Cargar configuración actual al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarConfiguracionColores();
+        configurarEventListeners();
+    });
+    
+    function configurarEventListeners() {
+        // Event listeners para color pickers
+        const colorPickers = document.querySelectorAll('.color-picker');
+        const hexInputs = document.querySelectorAll('.color-hex');
+        
+        colorPickers.forEach((picker, index) => {
+            picker.addEventListener('change', function() {
+                const hexInput = hexInputs[index];
+                hexInput.value = this.value;
+                actualizarVistaPrevia();
+            });
+        });
+        
+        hexInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
+                const colorPicker = colorPickers[index];
+                if (this.value.match(/^#[0-9A-Fa-f]{6}$/)) {
+                    colorPicker.value = this.value;
+                    actualizarVistaPrevia();
+                }
+            });
+        });
+    }
+    
+    function cargarConfiguracionColores() {
+        fetch('/tea/configuracion/api/cargar')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const colores = data.config.colores;
+                    document.getElementById('color-primario').value = colores.primario;
+                    document.getElementById('hex-primario').value = colores.primario;
+                    document.getElementById('color-secundario').value = colores.secundario;
+                    document.getElementById('hex-secundario').value = colores.secundario;
+                    document.getElementById('color-fondo').value = colores.fondo;
+                    document.getElementById('hex-fondo').value = colores.fondo;
+                    document.getElementById('color-texto').value = colores.texto;
+                    document.getElementById('hex-texto').value = colores.texto;
+                    document.getElementById('color-acento').value = colores.acento;
+                    document.getElementById('hex-acento').value = colores.acento;
+                    actualizarVistaPrevia();
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar configuración:', error);
+            });
+    }
+    
+    function actualizarVistaPrevia() {
+        const primario = document.getElementById('color-primario').value;
+        const secundario = document.getElementById('color-secundario').value;
+        const fondo = document.getElementById('color-fondo').value;
+        const texto = document.getElementById('color-texto').value;
+        const acento = document.getElementById('color-acento').value;
+        
+        // Actualizar variables CSS
+        document.documentElement.style.setProperty('--preview-primary', primario);
+        document.documentElement.style.setProperty('--preview-secondary', secundario);
+        document.documentElement.style.setProperty('--preview-bg', fondo);
+        document.documentElement.style.setProperty('--preview-text', texto);
+        document.documentElement.style.setProperty('--preview-accent', acento);
+    }
+    
+    function aplicarPreset(nombrePreset) {
+        const preset = presets[nombrePreset];
+        if (preset) {
+            document.getElementById('color-primario').value = preset.primario;
+            document.getElementById('hex-primario').value = preset.primario;
+            document.getElementById('color-secundario').value = preset.secundario;
+            document.getElementById('hex-secundario').value = preset.secundario;
+            document.getElementById('color-fondo').value = preset.fondo;
+            document.getElementById('hex-fondo').value = preset.fondo;
+            document.getElementById('color-texto').value = preset.texto;
+            document.getElementById('hex-texto').value = preset.texto;
+            document.getElementById('color-acento').value = preset.acento;
+            document.getElementById('hex-acento').value = preset.acento;
+            actualizarVistaPrevia();
+        }
+    }
+    
+    function guardarColores() {
+        const colores = {
+            tipo: 'colores',
+            color_primario: document.getElementById('color-primario').value,
+            color_secundario: document.getElementById('color-secundario').value,
+            color_fondo: document.getElementById('color-fondo').value,
+            color_texto: document.getElementById('color-texto').value,
+            color_acento: document.getElementById('color-acento').value
+        };
+        
+        fetch('/tea/configuracion/api/guardar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(colores)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('✅ Colores guardados exitosamente', 'success');
+            } else {
+                showNotification('❌ Error al guardar colores', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error al guardar colores:', error);
+            showNotification('❌ Error al guardar colores', 'error');
+        });
+    }
+    
+    function aplicarColores() {
+        guardarColores();
+        // Aplicar colores a la interfaz actual
+        const primario = document.getElementById('color-primario').value;
+        const secundario = document.getElementById('color-secundario').value;
+        const fondo = document.getElementById('color-fondo').value;
+        const texto = document.getElementById('color-texto').value;
+        const acento = document.getElementById('color-acento').value;
+        
+        document.documentElement.style.setProperty('--color-primary', primario);
+        document.documentElement.style.setProperty('--color-secondary', secundario);
+        document.documentElement.style.setProperty('--color-background', fondo);
+        document.documentElement.style.setProperty('--color-text', texto);
+        document.documentElement.style.setProperty('--color-accent', acento);
+        
+        showNotification('🎨 Colores aplicados a la interfaz', 'success');
+    }
+    
+    function resetearColores() {
+        if (confirm('¿Estás seguro de que quieres resetear los colores a los valores por defecto?')) {
+            aplicarPreset('clasico');
+            guardarColores();
+        }
+    }
+    
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            ${type === 'success' ? 'background: #27AE60;' : 'background: #E74C3C;'}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+</script>
+
+<style>
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+
+
+
