@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}🧠 1% Mejor Cada Día - TEA Edition{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/button-colors.css') }}">
     <style>
         * {
             margin: 0;
@@ -197,9 +198,176 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
         
+        /* Estilo específico para el botón Dashboard como el botón Salir */
+        .dashboard-btn {
+            background: #FF8C00 !important;
+            border-radius: 25px !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3) !important;
+        }
+        
+        .dashboard-btn:hover {
+            background: #FF7F00 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4) !important;
+        }
+        
+        .dashboard-btn .action-icon {
+            color: white !important;
+        }
+        
+        .dashboard-btn .action-title {
+            color: white !important;
+            font-weight: 600 !important;
+        }
+        
+        .dashboard-btn .action-desc {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        /* Estilo para todos los botones de navegación como el botón Salir */
+        .nav-btn-style {
+            border-radius: 15px !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+            padding: 15px 25px !important;
+            font-weight: 600 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            min-width: 100px !important;
+            text-decoration: none !important;
+        }
+        
+        .nav-btn-style:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            color: white !important;
+        }
+        
+        /* Colores específicos para cada botón */
+        /* 1. Rojo - Dashboard */
+        .nav-btn-style[href="/tea/padres/"] {
+            background: #E74C3C !important;
+        }
+        .nav-btn-style[href="/tea/padres/"]:hover {
+            background: #C0392B !important;
+        }
+        
+        /* 2. Azul - Configuración (padres) */
+        .nav-btn-style[href="/tea/padres/configuracion"] {
+            background: #3498DB !important;
+        }
+        .nav-btn-style[href="/tea/padres/configuracion"]:hover {
+            background: #2980B9 !important;
+        }
+        
+        /* 3. Verde - Reportes */
+        .nav-btn-style[href="/tea/padres/reportes"] {
+            background: #27AE60 !important;
+        }
+        .nav-btn-style[href="/tea/padres/reportes"]:hover {
+            background: #229954 !important;
+        }
+        
+        /* 4. Naranja - Mi Panel (niños) */
+        .nav-btn-style[href="/tea/nino/"] {
+            background: #FF8C00 !important;
+        }
+        .nav-btn-style[href="/tea/nino/"]:hover {
+            background: #FF7F00 !important;
+        }
+        
+        /* 5. Morado - Actividades */
+        .nav-btn-style[href="/tea/actividades/"] {
+            background: #9B59B6 !important;
+        }
+        .nav-btn-style[href="/tea/actividades/"]:hover {
+            background: #8E44AD !important;
+        }
+        
+        /* 6. Amarillo - Voz */
+        .nav-btn-style[href="/tea/voice-config/"] {
+            background: #F1C40F !important;
+        }
+        .nav-btn-style[href="/tea/voice-config/"]:hover {
+            background: #F39C12 !important;
+        }
+        
+        /* 7. Gris - Configuración (general) */
+        .nav-btn-style[href="/tea/configuracion/"] {
+            background: #95A5A6 !important;
+        }
+        .nav-btn-style[href="/tea/configuracion/"]:hover {
+            background: #7F8C8D !important;
+        }
+        
         .action-icon {
             font-size: 3rem;
             margin-bottom: 15px;
+        }
+        
+        /* Estilos para las características en tablas paralelas */
+        .features-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin-bottom: 8px;
+        }
+        
+        .feature-desc {
+            color: #7F8C8D;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .feature-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .feature {
+                min-height: auto;
+                padding: 15px;
+            }
         }
         
         .action-title {
@@ -298,29 +466,25 @@
                     
                     {% if session.user_type == 'padre' %}
                         <li class="nav-item">
-                            <a href="/tea/padres/" class="nav-link primary">📊 Dashboard</a>
+                            <a href="/tea/padres/" class="nav-link primary nav-btn-style">🏠 Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/tea/padres/configuracion" class="nav-link">⚙️ Configuración</a>
+                            <a href="/tea/padres/configuracion" class="nav-link nav-btn-style">⚙️ Configuración</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/tea/padres/reportes" class="nav-link">📈 Reportes</a>
+                            <a href="/tea/padres/reportes" class="nav-link nav-btn-style">📈 Reportes</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a href="/tea/nino/" class="nav-link primary">🎮 Mi Panel</a>
+                            <a href="/tea/nino/" class="nav-link primary nav-btn-style">🎮 Mi Panel</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/tea/actividades/" class="nav-link">🎯 Actividades</a>
+                            <a href="/tea/actividades/" class="nav-link nav-btn-style">🎯 Actividades</a>
                         </li>
                     {% endif %}
                     
                     <li class="nav-item">
-                        <a href="/tea/voice-config/" class="nav-link secondary">🎤 Voz</a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a href="/tea/configuracion/" class="nav-link secondary">⚙️ Configuración</a>
+                        <a href="/tea/configuracion/" class="nav-link secondary nav-btn-style">⚙️ Configuración</a>
                     </li>
                     
                     <li class="nav-item">
@@ -365,7 +529,7 @@
             
             <div class="quick-actions">
                 {% if session.user_type == 'padre' %}
-                    <a href="/tea/padres/" class="action-card">
+                    <a href="/tea/padres/" class="action-card dashboard-btn">
                         <div class="action-icon">📊</div>
                         <div class="action-title">Dashboard</div>
                         <div class="action-desc">Ver el progreso y estadísticas</div>

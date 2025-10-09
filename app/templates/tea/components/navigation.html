@@ -1,0 +1,23 @@
+<!-- Navegación persistente unificada -->
+<nav class="nav-persistente" role="navigation" aria-label="Navegación principal">
+    <a href="/tea/nino/" class="nav-item {% if request.endpoint == 'tea.nino.dashboard' %}active{% endif %}" aria-label="Inicio del niño">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Inicio</span>
+    </a>
+    <a href="/tea/actividades/" class="nav-item {% if 'actividades' in request.endpoint %}active{% endif %}" aria-label="Actividades disponibles">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-text">Actividades</span>
+    </a>
+    <a href="/tea/actividades/mapa" class="nav-item {% if 'mapa' in request.endpoint %}active{% endif %}" aria-label="Mapa de mundos">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-text">Mapa</span>
+    </a>
+    <a href="/tea/configuracion/" class="nav-item {% if 'configuracion' in request.endpoint %}active{% endif %}" aria-label="Configuración">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Configuración</span>
+    </a>
+    <a href="/tea/padres/" class="nav-item {% if 'padres' in request.endpoint %}active{% endif %}" aria-label="Vista de padres">
+        <span class="nav-icon">👨‍👩‍👧</span>
+        <span class="nav-text">Padres</span>
+    </a>
+</nav>

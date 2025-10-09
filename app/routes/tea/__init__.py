@@ -18,7 +18,7 @@ from .simple import simple_bp
 from .padres import padres_bp
 from .nino import nino_bp
 from .actividades import actividades_bp
-from .voice_config import voice_config_bp
+# voice_config_bp eliminado - ahora está unificado en configuracion
 from .auth import auth_bp
 from .avatar import avatar_bp
 from .avatars import avatars_bp
@@ -29,7 +29,7 @@ tea_bp.register_blueprint(simple_bp)
 tea_bp.register_blueprint(padres_bp)
 tea_bp.register_blueprint(nino_bp)
 tea_bp.register_blueprint(actividades_bp)
-tea_bp.register_blueprint(voice_config_bp)
+# voice_config_bp eliminado
 tea_bp.register_blueprint(auth_bp)
 tea_bp.register_blueprint(avatar_bp)
 tea_bp.register_blueprint(avatars_bp)

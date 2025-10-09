@@ -34,6 +34,22 @@ def lista_actividades():
         return render_template('tea/error.html', 
                              mensaje="No hay perfil de niño configurado")
     
+    # Obtener avatar actual del niño
+    from app.models.tea_models import AvatarUsuario, Avatar
+    avatar_usuario = AvatarUsuario.query.filter_by(
+        usuario_id=nino.id,
+        tipo_usuario='nino',
+        activo=True
+    ).first()
+    
+    avatar_actual = None
+    if avatar_usuario:
+        avatar_actual = avatar_usuario.avatar
+    
+    # Si no hay avatar seleccionado, usar el avatar por defecto
+    if not avatar_actual:
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
+    
     # Obtener actividades progresivas recomendadas
     sistema_progresivo = ProgressiveLearningSystem(nino.id)
     recomendaciones = obtener_actividades_progresivas(nino.id, limite=8)
@@ -46,6 +62,7 @@ def lista_actividades():
     
     return render_template('tea/actividades_lista.html',
                          nino=nino,
+                         avatar_actual=avatar_actual,
                          recomendaciones=recomendaciones,
                          plan_sesion=plan_sesion,
                          actividades=actividades)
@@ -57,6 +74,22 @@ def realizar_actividad(actividad_id):
     
     nino = PerfilNino.query.first()
     actividad = ActividadTEA.query.get_or_404(actividad_id)
+    
+    # Obtener avatar actual del niño
+    from app.models.tea_models import AvatarUsuario, Avatar
+    avatar_usuario = AvatarUsuario.query.filter_by(
+        usuario_id=nino.id,
+        tipo_usuario='nino',
+        activo=True
+    ).first()
+    
+    avatar_actual = None
+    if avatar_usuario:
+        avatar_actual = avatar_usuario.avatar
+    
+    # Si no hay avatar seleccionado, usar el avatar por defecto
+    if not avatar_actual:
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
     
     # Obtener o crear sesión de hoy
     hoy = datetime.now().date()
@@ -76,7 +109,8 @@ def realizar_actividad(actividad_id):
     return render_template('tea/actividad_detalle.html',
                          nino=nino,
                          actividad=actividad,
-                         sesion=sesion)
+                         sesion=sesion,
+                         avatar_actual=avatar_actual)
 
 @actividades_bp.route('/api/completar/<int:actividad_id>', methods=['POST'])
 def api_completar_actividad(actividad_id):
@@ -227,11 +261,28 @@ def actividades_lenguaje():
         activa=True
     ).all()
     
+    # Obtener avatar actual del niño
+    from app.models.tea_models import AvatarUsuario, Avatar
+    avatar_usuario = AvatarUsuario.query.filter_by(
+        usuario_id=nino.id,
+        tipo_usuario='nino',
+        activo=True
+    ).first()
+    
+    avatar_actual = None
+    if avatar_usuario:
+        avatar_actual = avatar_usuario.avatar
+    
+    # Si no hay avatar seleccionado, usar el avatar por defecto
+    if not avatar_actual:
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
+    
     return render_template('tea/actividades_categoria.html',
                          nino=nino,
                          actividades=actividades,
                          categoria='Lenguaje',
-                         icono='🗣️')
+                         icono='🗣️',
+                         avatar_actual=avatar_actual)
 
 @actividades_bp.route('/numeros')
 def actividades_numeros():
@@ -244,11 +295,28 @@ def actividades_numeros():
         activa=True
     ).all()
     
+    # Obtener avatar actual del niño
+    from app.models.tea_models import AvatarUsuario, Avatar
+    avatar_usuario = AvatarUsuario.query.filter_by(
+        usuario_id=nino.id,
+        tipo_usuario='nino',
+        activo=True
+    ).first()
+    
+    avatar_actual = None
+    if avatar_usuario:
+        avatar_actual = avatar_usuario.avatar
+    
+    # Si no hay avatar seleccionado, usar el avatar por defecto
+    if not avatar_actual:
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
+    
     return render_template('tea/actividades_categoria.html',
                          nino=nino,
                          actividades=actividades,
                          categoria='Números',
-                         icono='🔢')
+                         icono='🔢',
+                         avatar_actual=avatar_actual)
 
 @actividades_bp.route('/colores')
 def actividades_colores():
@@ -261,11 +329,28 @@ def actividades_colores():
         activa=True
     ).all()
     
+    # Obtener avatar actual del niño
+    from app.models.tea_models import AvatarUsuario, Avatar
+    avatar_usuario = AvatarUsuario.query.filter_by(
+        usuario_id=nino.id,
+        tipo_usuario='nino',
+        activo=True
+    ).first()
+    
+    avatar_actual = None
+    if avatar_usuario:
+        avatar_actual = avatar_usuario.avatar
+    
+    # Si no hay avatar seleccionado, usar el avatar por defecto
+    if not avatar_actual:
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
+    
     return render_template('tea/actividades_categoria.html',
                          nino=nino,
                          actividades=actividades,
                          categoria='Colores',
-                         icono='🎨')
+                         icono='🎨',
+                         avatar_actual=avatar_actual)
 
 @actividades_bp.route('/animales')
 def actividades_animales():
@@ -278,11 +363,28 @@ def actividades_animales():
         activa=True
     ).all()
     
+    # Obtener avatar actual del niño
+    from app.models.tea_models import AvatarUsuario, Avatar
+    avatar_usuario = AvatarUsuario.query.filter_by(
+        usuario_id=nino.id,
+        tipo_usuario='nino',
+        activo=True
+    ).first()
+    
+    avatar_actual = None
+    if avatar_usuario:
+        avatar_actual = avatar_usuario.avatar
+    
+    # Si no hay avatar seleccionado, usar el avatar por defecto
+    if not avatar_actual:
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
+    
     return render_template('tea/actividades_categoria.html',
                          nino=nino,
                          actividades=actividades,
                          categoria='Animales',
-                         icono='🐶')
+                         icono='🐶',
+                         avatar_actual=avatar_actual)
 
 @actividades_bp.route('/api/recomendaciones')
 def api_recomendaciones():
@@ -379,6 +481,22 @@ def categoria_actividades(categoria):
         if nino:
             from app.services.user_progress import UserProgressSystem
             progreso = UserProgressSystem.obtener_progreso_categoria(nino.id, categoria)
+            
+            # Obtener avatar actual del niño
+            from app.models.tea_models import AvatarUsuario, Avatar
+            avatar_usuario = AvatarUsuario.query.filter_by(
+                usuario_id=nino.id,
+                tipo_usuario='nino',
+                activo=True
+            ).first()
+            
+            avatar_actual = None
+            if avatar_usuario:
+                avatar_actual = avatar_usuario.avatar
+            
+            # Si no hay avatar seleccionado, usar el avatar por defecto
+            if not avatar_actual:
+                avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
         
         # Configurar información de la categoría
         categoria_info = {
@@ -431,7 +549,8 @@ def categoria_actividades(categoria):
                              actividades=actividades_data,
                              progreso_porcentaje=progreso['porcentaje_completado'] if progreso else 0,
                              actividades_completadas=progreso['actividades_completadas'] if progreso else 0,
-                             actividades_totales=progreso['actividades_totales'] if progreso else len(actividades))
+                             actividades_totales=progreso['actividades_totales'] if progreso else len(actividades),
+                             avatar_actual=avatar_actual)
         
     except Exception as e:
         # Fallback a datos mock
@@ -455,6 +574,10 @@ def categoria_actividades(categoria):
         
         info = categoria_info.get(categoria, {'icono': '🎯', 'descripcion': 'Actividades de aprendizaje'})
         
+        # Obtener avatar por defecto para el fallback
+        from app.models.tea_models import Avatar
+        avatar_actual = Avatar.query.filter_by(nombre='Spider-Man').first()
+        
         return render_template('tea/categoria_actividades.html',
                              categoria=categoria,
                              categoria_icono=info['icono'],
@@ -462,7 +585,8 @@ def categoria_actividades(categoria):
                              actividades=actividades_mock,
                              progreso_porcentaje=0,
                              actividades_completadas=0,
-                             actividades_totales=1)
+                             actividades_totales=1,
+                             avatar_actual=avatar_actual)
 
 @actividades_bp.route('/api/categoria/<categoria>')
 def api_categoria_actividades(categoria):

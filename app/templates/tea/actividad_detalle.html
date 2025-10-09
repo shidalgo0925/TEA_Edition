@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ actividad.titulo }} - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/button-colors.css') }}">
     <style>
         * {
             margin: 0;
@@ -308,6 +309,23 @@
     
     <main class="main-content">
         <div class="actividad-container">
+            <!-- Avatar Guía -->
+            {% if avatar_actual %}
+            <div class="avatar-guia" style="text-align: center; margin-bottom: 30px; background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid #E74C3C;">
+                        <img src="{{ avatar_actual.imagen_url }}" alt="{{ avatar_actual.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="text-align: left;">
+                        <h3 style="color: #E74C3C; margin-bottom: 5px;">{{ avatar_actual.nombre }}</h3>
+                        <p id="avatar-mensaje-actividad" style="color: #7F8C8D; font-style: italic; margin: 0;">
+                            ¡Hola! Te voy a guiar en esta actividad. ¡Vamos a aprender juntos!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
             <!-- Header de la Actividad -->
             <div class="actividad-header">
                 <h1 class="actividad-titulo">{{ actividad.titulo }}</h1>
@@ -382,6 +400,11 @@
             console.log('📄 Página cargada, verificando archivo JavaScript...');
             cargarProgreso();
             
+            // Hacer que el avatar salude al cargar la página
+            setTimeout(() => {
+                hablarAvatar('¡Hola! Te voy a guiar en esta actividad. ¡Vamos a aprender juntos!');
+            }, 1000);
+            
             // Verificar si el archivo JavaScript se cargó correctamente
             setTimeout(() => {
                 if (typeof inicializarActividad === 'function') {
@@ -406,11 +429,37 @@
             console.log('🎯 Botón "Comenzar Actividad" presionado');
             tiempoInicio = new Date();
             
-            if (confirm('¿Estás listo para comenzar esta actividad?')) {
-                console.log('✅ Usuario confirmó, llamando a mostrarActividad()');
-                mostrarActividad();
-            } else {
-                console.log('❌ Usuario canceló la actividad');
+            // Hacer que el avatar hable
+            hablarAvatar('¡Perfecto! ¿Estás listo para comenzar esta actividad? ¡Vamos a aprender juntos!');
+            
+            setTimeout(() => {
+                if (confirm('¿Estás listo para comenzar esta actividad?')) {
+                    console.log('✅ Usuario confirmó, llamando a mostrarActividad()');
+                    hablarAvatar('¡Excelente! ¡Empecemos con la actividad!');
+                    setTimeout(() => {
+                        mostrarActividad();
+                    }, 2000);
+                } else {
+                    console.log('❌ Usuario canceló la actividad');
+                    hablarAvatar('No te preocupes, podemos intentarlo más tarde. ¡Cuando estés listo!');
+                }
+            }, 3000);
+        }
+        
+        function hablarAvatar(texto) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
+                speechSynthesis.speak(utterance);
+                
+                // Actualizar el mensaje del avatar
+                const mensajeElement = document.getElementById('avatar-mensaje-actividad');
+                if (mensajeElement) {
+                    mensajeElement.textContent = texto;
+                }
             }
         }
         

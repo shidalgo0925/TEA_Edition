@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚙️ Configuración - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/button-colors.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #E74C3C;
+        }
+        
+        .header h1 {
+            color: #2C3E50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7F8C8D;
+            font-size: 1.1rem;
+        }
+        
+        .config-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .config-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid #E74C3C;
+        }
+        
+        .config-section h2 {
+            color: #2C3E50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #34495E;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #E74C3C;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.selected {
+            border-color: #2C3E50;
+            transform: scale(1.1);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #E74C3C;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #C0392B;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95A5A6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7F8C8D;
+            transform: translateY(-2px);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #27AE60;
+        }
+        
+        .notification.error {
+            background: #E74C3C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Configuración del Sistema</h1>
+            <p>Personaliza la experiencia de aprendizaje para tu hijo</p>
+        </div>
+        
+        <div class="config-sections">
+            <!-- Configuración de Colores -->
+            <div class="config-section">
+                <h2>🎨 Colores y Apariencia</h2>
+                
+                <div class="form-group">
+                    <label>Color Principal</label>
+                    <div class="color-picker">
+                        <div class="color-option selected" style="background: #E74C3C;" data-color="#E74C3C"></div>
+                        <div class="color-option" style="background: #3498DB;" data-color="#3498DB"></div>
+                        <div class="color-option" style="background: #27AE60;" data-color="#27AE60"></div>
+                        <div class="color-option" style="background: #9B59B6;" data-color="#9B59B6"></div>
+                        <div class="color-option" style="background: #F1C40F;" data-color="#F1C40F"></div>
+                        <div class="color-option" style="background: #FF8C00;" data-color="#FF8C00"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Color Secundario</label>
+                    <div class="color-picker">
+                        <div class="color-option" style="background: #E74C3C;" data-color="#E74C3C"></div>
+                        <div class="color-option selected" style="background: #3498DB;" data-color="#3498DB"></div>
+                        <div class="color-option" style="background: #27AE60;" data-color="#27AE60"></div>
+                        <div class="color-option" style="background: #9B59B6;" data-color="#9B59B6"></div>
+                        <div class="color-option" style="background: #F1C40F;" data-color="#F1C40F"></div>
+                        <div class="color-option" style="background: #FF8C00;" data-color="#FF8C00"></div>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="alto-contraste" checked>
+                    <label for="alto-contraste">Modo Alto Contraste</label>
+                </div>
+            </div>
+            
+            <!-- Configuración de Dificultad -->
+            <div class="config-section">
+                <h2>🎯 Dificultad y Progresión</h2>
+                
+                <div class="form-group">
+                    <label>Nivel de Dificultad Global</label>
+                    <select id="nivel-dificultad">
+                        <option value="facil">Fácil</option>
+                        <option value="medio" selected>Medio</option>
+                        <option value="dificil">Difícil</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tiempo por Actividad (minutos)</label>
+                    <input type="number" id="tiempo-actividad" value="15" min="5" max="60">
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="pausas-automaticas" checked>
+                    <label for="pausas-automaticas">Pausas Automáticas</label>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tiempo de Pausa (minutos)</label>
+                    <input type="number" id="tiempo-pausa" value="5" min="1" max="15">
+                </div>
+            </div>
+            
+            <!-- Configuración de Voz -->
+            <div class="config-section">
+                <h2>🎤 Voz y Audio</h2>
+                
+                <div class="form-group">
+                    <label>Género de Voz</label>
+                    <select id="genero-voz">
+                        <option value="female" selected>Femenina</option>
+                        <option value="male">Masculina</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Idioma</label>
+                    <select id="idioma-voz">
+                        <option value="es" selected>Español</option>
+                        <option value="en">Inglés</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Velocidad de Voz</label>
+                    <input type="range" id="velocidad-voz" min="0.5" max="2.0" step="0.1" value="0.9">
+                    <span id="velocidad-valor">0.9</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tono de Voz</label>
+                    <input type="range" id="tono-voz" min="0.5" max="2.0" step="0.1" value="1.1">
+                    <span id="tono-valor">1.1</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Volumen</label>
+                    <input type="range" id="volumen-voz" min="0.0" max="1.0" step="0.1" value="0.8">
+                    <span id="volumen-valor">0.8</span>
+                </div>
+            </div>
+            
+            <!-- Configuración de Avatar -->
+            <div class="config-section">
+                <h2>👩‍🏫 Avatar Virtual</h2>
+                
+                <div class="form-group">
+                    <label>Avatar Preferido</label>
+                    <select id="avatar-preferido">
+                        <option value="spiderman" selected>Spider-Man</option>
+                        <option value="tony">Tony Stark</option>
+                        <option value="mario">Mario</option>
+                        <option value="princesa">Princesa</option>
+                        <option value="robot">Robot</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="mostrar-puntos" checked>
+                    <label for="mostrar-puntos">Mostrar Puntos</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="mostrar-medallas" checked>
+                    <label for="mostrar-medallas">Mostrar Medallas</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="notificaciones-logros" checked>
+                    <label for="notificaciones-logros">Notificaciones de Logros</label>
+                </div>
+            </div>
+            
+            <!-- Configuración de Accesibilidad -->
+            <div class="config-section">
+                <h2>♿ Accesibilidad</h2>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="navegacion-teclado" checked>
+                    <label for="navegacion-teclado">Navegación por Teclado</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lectores-pantalla">
+                    <label for="lectores-pantalla">Compatibilidad con Lectores de Pantalla</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="zoom-habilitado" checked>
+                    <label for="zoom-habilitado">Zoom Habilitado</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="modo-daltonico">
+                    <label for="modo-daltonico">Modo Daltónico</label>
+                </div>
+            </div>
+            
+            <!-- Configuración de Interfaz -->
+            <div class="config-section">
+                <h2>🖥️ Interfaz de Usuario</h2>
+                
+                <div class="form-group">
+                    <label>Tamaño de Fuente</label>
+                    <select id="tamaño-fuente">
+                        <option value="pequeño">Pequeño</option>
+                        <option value="medio" selected>Medio</option>
+                        <option value="grande">Grande</option>
+                        <option value="extra-grande">Extra Grande</option>
+                    </select>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="animaciones-habilitadas" checked>
+                    <label for="animaciones-habilitadas">Animaciones Habilitadas</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="sonidos-habilitados" checked>
+                    <label for="sonidos-habilitados">Sonidos Habilitados</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="musica-fondo">
+                    <label for="musica-fondo">Música de Fondo</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="guardarConfiguracion()">💾 Guardar Configuración</button>
+            <button class="btn btn-secondary" onclick="resetearConfiguracion()">🔄 Restaurar Valores por Defecto</button>
+            <a href="/tea/padres/" class="btn btn-secondary">🏠 Volver al Dashboard</a>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    
+    <script>
+        // Actualizar valores de los sliders
+        document.getElementById('velocidad-voz').addEventListener('input', function() {
+            document.getElementById('velocidad-valor').textContent = this.value;
+        });
+        
+        document.getElementById('tono-voz').addEventListener('input', function() {
+            document.getElementById('tono-valor').textContent = this.value;
+        });
+        
+        document.getElementById('volumen-voz').addEventListener('input', function() {
+            document.getElementById('volumen-valor').textContent = this.value;
+        });
+        
+        // Selección de colores
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remover selección anterior
+                this.parentElement.querySelectorAll('.color-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Seleccionar nuevo color
+                this.classList.add('selected');
+            });
+        });
+        
+        function mostrarNotificacion(mensaje, tipo) {
+            const notification = document.getElementById('notification');
+            notification.textContent = mensaje;
+            notification.className = `notification ${tipo} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function guardarConfiguracion() {
+            // Recopilar todos los datos de configuración
+            const config = {
+                colores: {
+                    color_primario: document.querySelector('.color-picker .selected').dataset.color,
+                    color_secundario: document.querySelectorAll('.color-picker')[1].querySelector('.selected').dataset.color
+                },
+                dificultad: {
+                    nivel_dificultad_global: document.getElementById('nivel-dificultad').value,
+                    tiempo_por_actividad: parseInt(document.getElementById('tiempo-actividad').value),
+                    pausas_automaticas: document.getElementById('pausas-automaticas').checked,
+                    tiempo_pausa: parseInt(document.getElementById('tiempo-pausa').value)
+                },
+                voz: {
+                    genero: document.getElementById('genero-voz').value,
+                    idioma: document.getElementById('idioma-voz').value,
+                    velocidad: parseFloat(document.getElementById('velocidad-voz').value),
+                    tono: parseFloat(document.getElementById('tono-voz').value),
+                    volumen: parseFloat(document.getElementById('volumen-voz').value)
+                },
+                avatar: {
+                    avatar_preferido: document.getElementById('avatar-preferido').value,
+                    mostrar_puntos: document.getElementById('mostrar-puntos').checked,
+                    mostrar_medallas: document.getElementById('mostrar-medallas').checked,
+                    notificaciones_logros: document.getElementById('notificaciones-logros').checked
+                },
+                accesibilidad: {
+                    navegacion_teclado: document.getElementById('navegacion-teclado').checked,
+                    lectores_pantalla: document.getElementById('lectores-pantalla').checked,
+                    zoom_habilitado: document.getElementById('zoom-habilitado').checked,
+                    modo_daltonico: document.getElementById('modo-daltonico').checked
+                },
+                interfaz: {
+                    tamaño_fuente: document.getElementById('tamaño-fuente').value,
+                    animaciones_habilitadas: document.getElementById('animaciones-habilitadas').checked,
+                    sonidos_habilitados: document.getElementById('sonidos-habilitados').checked,
+                    musica_fondo: document.getElementById('musica-fondo').checked
+                }
+            };
+            
+            // Enviar configuración al servidor
+            fetch('/tea/configuracion/api/guardar-unificada', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(config)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarNotificacion('✅ Configuración guardada exitosamente', 'success');
+                } else {
+                    mostrarNotificacion('❌ Error al guardar configuración', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarNotificacion('❌ Error al guardar configuración', 'error');
+            });
+        }
+        
+        function resetearConfiguracion() {
+            if (confirm('¿Estás seguro de que quieres restaurar todos los valores por defecto?')) {
+                // Restaurar valores por defecto
+                document.getElementById('nivel-dificultad').value = 'medio';
+                document.getElementById('tiempo-actividad').value = '15';
+                document.getElementById('pausas-automaticas').checked = true;
+                document.getElementById('tiempo-pausa').value = '5';
+                document.getElementById('genero-voz').value = 'female';
+                document.getElementById('idioma-voz').value = 'es';
+                document.getElementById('velocidad-voz').value = '0.9';
+                document.getElementById('tono-voz').value = '1.1';
+                document.getElementById('volumen-voz').value = '0.8';
+                document.getElementById('avatar-preferido').value = 'spiderman';
+                document.getElementById('mostrar-puntos').checked = true;
+                document.getElementById('mostrar-medallas').checked = true;
+                document.getElementById('notificaciones-logros').checked = true;
+                document.getElementById('navegacion-teclado').checked = true;
+                document.getElementById('lectores-pantalla').checked = false;
+                document.getElementById('zoom-habilitado').checked = true;
+                document.getElementById('modo-daltonico').checked = false;
+                document.getElementById('tamaño-fuente').value = 'medio';
+                document.getElementById('animaciones-habilitadas').checked = true;
+                document.getElementById('sonidos-habilitados').checked = true;
+                document.getElementById('musica-fondo').checked = false;
+                
+                // Actualizar valores de sliders
+                document.getElementById('velocidad-valor').textContent = '0.9';
+                document.getElementById('tono-valor').textContent = '1.1';
+                document.getElementById('volumen-valor').textContent = '0.8';
+                
+                mostrarNotificacion('🔄 Configuración restaurada a valores por defecto', 'success');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+

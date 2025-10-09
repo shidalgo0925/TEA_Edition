@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧠 1% Mejor Cada Día - TEA Edition</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/interactive_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/button-colors.css') }}">
     <style>
         * {
             margin: 0;
@@ -26,59 +28,7 @@
             padding: 20px;
         }
         
-        /* Navegación persistente */
-        .nav-persistente {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-top: 3px solid #FFD700;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #2C3E50;
-            padding: 10px;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            min-width: 80px;
-        }
-        
-        .nav-item:hover, .nav-item:focus {
-            background: #FFD700;
-            transform: translateY(-3px);
-            outline: 3px solid #FFA500;
-        }
-        
-        .nav-item.active {
-            background: #FFA500;
-            color: white;
-        }
-        
-        .nav-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .nav-text {
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        /* Contenido principal con padding para navegación */
-        .main-content {
-            padding-bottom: 100px;
-        }
+        /* Estilos específicos del dashboard */
         
         .header {
             text-align: center;
@@ -856,29 +806,8 @@
         </div>
     </div>
 
-    <!-- Navegación persistente -->
-    <nav class="nav-persistente" role="navigation" aria-label="Navegación principal">
-        <a href="/tea/nino/" class="nav-item active" aria-label="Inicio del niño">
-            <span class="nav-icon">🏠</span>
-            <span class="nav-text">Inicio</span>
-        </a>
-        <a href="/tea/actividades/" class="nav-item" aria-label="Actividades disponibles">
-            <span class="nav-icon">🎯</span>
-            <span class="nav-text">Actividades</span>
-        </a>
-        <a href="/tea/actividades/mapa" class="nav-item" aria-label="Mapa de mundos">
-            <span class="nav-icon">🗺️</span>
-            <span class="nav-text">Mapa</span>
-        </a>
-        <a href="/tea/configuracion-voz/" class="nav-item" aria-label="Configuración de voz">
-            <span class="nav-icon">🎤</span>
-            <span class="nav-text">Voz</span>
-        </a>
-        <a href="/tea/padres/" class="nav-item" aria-label="Vista de padres">
-            <span class="nav-icon">👨‍👩‍👧</span>
-            <span class="nav-text">Padres</span>
-        </a>
-    </nav>
+    <!-- Navegación persistente unificada -->
+    {% include 'tea/components/navigation.html' %}
 
     <script src="{{ url_for('static', filename='js/audio_system.js') }}"></script>
     <script src="{{ url_for('static', filename='js/voice_recognition.js') }}"></script>

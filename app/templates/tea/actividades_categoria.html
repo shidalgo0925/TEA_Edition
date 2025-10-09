@@ -195,6 +195,29 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
+            <!-- Avatar Guía -->
+            <div class="avatar-guia" style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.8); border-radius: 15px;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid #E74C3C;">
+                    {% if avatar_actual %}
+                        <img src="{{ avatar_actual.imagen_url }}" alt="{{ avatar_actual.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; background: #E74C3C; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">👨‍🏫</div>
+                    {% endif %}
+                </div>
+                <div style="text-align: left;">
+                    <h3 style="color: #E74C3C; margin-bottom: 5px; font-size: 1.2rem;">
+                        {% if avatar_actual %}
+                            {{ avatar_actual.nombre }}
+                        {% else %}
+                            Maestra Virtual
+                        {% endif %}
+                    </h3>
+                    <p id="avatar-mensaje-categoria" style="color: #7F8C8D; font-style: italic; margin: 0; font-size: 0.9rem;">
+                        ¡Hola! Te voy a guiar en las actividades de {{ categoria }}. ¡Vamos a aprender!
+                    </p>
+                </div>
+            </div>
+            
             <div class="categoria-icon">{{ icono }}</div>
             <h1 class="categoria-titulo">{{ categoria }}</h1>
             <p class="categoria-desc">
@@ -260,8 +283,45 @@
     
     <script>
         function jugarActividad(actividadId) {
-            window.location.href = `/tea/actividades/${actividadId}`;
+            // Hacer que el avatar hable antes de ir a la actividad
+            hablarAvatar('¡Excelente elección! ¡Vamos a aprender juntos!');
+            setTimeout(() => {
+                window.location.href = `/tea/actividades/${actividadId}`;
+            }, 2000);
         }
+        
+        function hablarAvatar(texto) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
+                speechSynthesis.speak(utterance);
+                
+                // Actualizar el mensaje del avatar
+                const mensajeElement = document.getElementById('avatar-mensaje-categoria');
+                if (mensajeElement) {
+                    mensajeElement.textContent = texto;
+                }
+            }
+        }
+        
+        // Hacer que el avatar salude al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const mensajes = {
+                    'Lenguaje': '¡Vamos a practicar palabras! ¿Te gusta hablar?',
+                    'Números': '¡Los números son muy divertidos! ¿Quieres contar conmigo?',
+                    'Colores': '¡Los colores son hermosos! ¿Cuál es tu favorito?',
+                    'Animales': '¡Los animales son nuestros amigos! ¿Quieres conocerlos?'
+                };
+                
+                const categoria = '{{ categoria }}';
+                const mensaje = mensajes[categoria] || '¡Hola! Te voy a guiar en estas actividades. ¡Vamos a aprender!';
+                hablarAvatar(mensaje);
+            }, 1000);
+        });
     </script>
 </body>
 </html>

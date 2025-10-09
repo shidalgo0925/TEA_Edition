@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎯 Actividades - TEA Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/button-colors.css') }}">
     <style>
         * {
             margin: 0;
@@ -270,42 +271,52 @@
         <!-- Header -->
         <div class="header">
             <a href="/tea/nino/" class="nav-button">🔙 Volver</a>
-            <div class="avatar">👩‍🏫</div>
+            <div class="avatar" id="avatar-display">
+                {% if avatar_actual %}
+                    <img src="{{ avatar_actual.imagen_url }}" alt="{{ avatar_actual.nombre }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                {% else %}
+                    👩‍🏫
+                {% endif %}
+            </div>
             <h1 class="saludo">¡Hola {{ nino.nombre }}!</h1>
-            <p style="font-size: 1.2rem; color: #7F8C8D;">
-                ¿Qué quieres aprender hoy? 🌟
+            <p style="font-size: 1.2rem; color: #7F8C8D;" id="avatar-mensaje">
+                {% if avatar_actual %}
+                    {{ avatar_actual.get_frases()[0] if avatar_actual.get_frases() else "¿Qué quieres aprender hoy?" }}
+                {% else %}
+                    ¿Qué quieres aprender hoy? 🌟
+                {% endif %}
             </p>
         </div>
         
         <!-- Categorías -->
         <div class="categorias-grid">
-            <a href="/tea/actividades/lenguaje" class="categoria-card">
+            <div class="categoria-card" onclick="seleccionarCategoria('lenguaje'); setTimeout(() => window.location.href='/tea/actividades/lenguaje', 2000);">
                 <div class="categoria-icon">🗣️</div>
                 <div class="categoria-titulo">Lenguaje</div>
                 <div class="categoria-desc">Aprende a hablar y pronunciar palabras</div>
                 <button class="categoria-btn">¡Empezar!</button>
-            </a>
+            </div>
             
-            <a href="/tea/actividades/numeros" class="categoria-card">
+            <div class="categoria-card" onclick="seleccionarCategoria('numeros'); setTimeout(() => window.location.href='/tea/actividades/numeros', 2000);">
                 <div class="categoria-icon">🔢</div>
                 <div class="categoria-titulo">Números</div>
                 <div class="categoria-desc">Cuenta números y haz sumas</div>
                 <button class="categoria-btn">¡Empezar!</button>
-            </a>
+            </div>
             
-            <a href="/tea/actividades/colores" class="categoria-card">
+            <div class="categoria-card" onclick="seleccionarCategoria('colores'); setTimeout(() => window.location.href='/tea/actividades/colores', 2000);">
                 <div class="categoria-icon">🎨</div>
                 <div class="categoria-titulo">Colores</div>
                 <div class="categoria-desc">Identifica y mezcla colores</div>
                 <button class="categoria-btn">¡Empezar!</button>
-            </a>
+            </div>
             
-            <a href="/tea/actividades/animales" class="categoria-card">
+            <div class="categoria-card" onclick="seleccionarCategoria('animales'); setTimeout(() => window.location.href='/tea/actividades/animales', 2000);">
                 <div class="categoria-icon">🐶</div>
                 <div class="categoria-titulo">Animales</div>
                 <div class="categoria-desc">Aprende sobre animales y sus sonidos</div>
                 <button class="categoria-btn">¡Empezar!</button>
-            </a>
+            </div>
         </div>
         
         <!-- Actividades Recomendadas -->
@@ -397,21 +408,54 @@
     
     <script>
         function jugarActividad(actividadId) {
-            window.location.href = `/tea/actividades/${actividadId}`;
+            // Hacer que el avatar hable antes de ir a la actividad
+            hablarAvatar('¡Excelente elección! ¡Vamos a aprender juntos!');
+            setTimeout(() => {
+                window.location.href = `/tea/actividades/${actividadId}`;
+            }, 2000);
         }
         
         function inicioRapido() {
+            // Hacer que el avatar hable
+            hablarAvatar('¡Perfecto! ¡Empecemos con una actividad rápida!');
             // Obtener la primera actividad disponible
             const primeraActividad = document.querySelector('.actividad-card');
             if (primeraActividad) {
                 const boton = primeraActividad.querySelector('.btn-jugar');
                 if (boton) {
-                    boton.click();
+                    setTimeout(() => {
+                        boton.click();
+                    }, 2000);
                 }
             } else {
                 // Si no hay actividades, ir a la primera categoría
-                window.location.href = '/tea/actividades/lenguaje';
+                setTimeout(() => {
+                    window.location.href = '/tea/actividades/lenguaje';
+                }, 2000);
             }
+        }
+        
+        function hablarAvatar(texto) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                utterance.volume = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        function seleccionarCategoria(categoria) {
+            const mensajes = {
+                'lenguaje': '¡Vamos a practicar palabras! ¿Te gusta hablar?',
+                'numeros': '¡Los números son muy divertidos! ¿Quieres contar conmigo?',
+                'colores': '¡Los colores son hermosos! ¿Cuál es tu favorito?',
+                'animales': '¡Los animales son nuestros amigos! ¿Quieres conocerlos?'
+            };
+            
+            const mensaje = mensajes[categoria] || '¡Excelente elección! ¡Vamos a aprender!';
+            hablarAvatar(mensaje);
         }
         
         // Animación de entrada para las actividades
@@ -427,6 +471,11 @@
                     actividad.style.transform = 'translateY(0)';
                 }, index * 200);
             });
+            
+            // Hacer que el avatar salude al cargar la página
+            setTimeout(() => {
+                hablarAvatar('¡Hola! ¿Qué quieres aprender hoy?');
+            }, 1000);
         });
     </script>
 </body>
